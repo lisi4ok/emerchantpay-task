@@ -17,7 +17,7 @@ trait Imageable
      */
     public function images(): MorphMany
     {
-        $this->morphMany(Image::class, 'imageable');
+        return $this->morphMany(Image::class, 'imageable');
     }
 
     /**
