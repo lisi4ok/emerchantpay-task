@@ -123,4 +123,9 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+
+    'first_user_email' => env('FIRST_USER_EMAIL', 'master@lisi4ok.com'),
+    'first_user_name' => env('FIRST_USER_NAME', 'Zaio Klepoyshkov'),
+    'first_user_password' => env('FIRST_USER_PASSWORD', 'password'),
+
 ];
