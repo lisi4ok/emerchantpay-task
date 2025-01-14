@@ -12,6 +12,9 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
+        if ($user->can('any user')) {
+            return true;
+        }
         return false;
     }
 
@@ -20,6 +23,9 @@ class UserPolicy
      */
     public function view(User $user, User $model): bool
     {
+        if ($user->can('view user')) {
+            return true;
+        }
         return false;
     }
 
@@ -28,6 +34,9 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
+        if ($user->can('create user')) {
+            return true;
+        }
         return false;
     }
 
@@ -36,6 +45,9 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
+        if ($user->can('update user')) {
+            return true;
+        }
         return false;
     }
 
@@ -44,6 +56,9 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
+        if ($user->can('delete user')) {
+            return true;
+        }
         return false;
     }
 
