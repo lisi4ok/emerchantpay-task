@@ -6,11 +6,10 @@ namespace App\Enums;
 
 use App\Traits\ArrayableEnumeration;
 
-enum RoleEnum: int
+enum TransactionTypeEnum: int
 {
     use ArrayableEnumeration;
 
-    case USER = 0;
-    case MERCHANT = 1;
-    case ADMINISTRATOR = 2;
+    case CREDIT = 0;
+    case DEBIT = 1;
 }

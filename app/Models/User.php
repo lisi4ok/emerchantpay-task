@@ -3,7 +3,9 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\UserStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -67,11 +69,11 @@ class User extends Authenticatable implements ImageInterface // MustVerifyEmail,
             return;
         }
 
-        static::updating(function($table)  {
+        static::updating(function($table) {
             $table->updated_by = Auth::user()->id;
         });
 
-        static::saving(function($table)  {
+        static::saving(function($table) {
             $table->created_by = Auth::user()->id;
         });
     }
@@ -86,6 +88,9 @@ class User extends Authenticatable implements ImageInterface // MustVerifyEmail,
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'status' => UserStatusEnum::class,
+            'created_at' => 'datetime:Y-m-d H:i:s',
+            'updated_at' => 'datetime:Y-m-d H:i:s',
         ];
     }
 
@@ -114,13 +119,15 @@ class User extends Authenticatable implements ImageInterface // MustVerifyEmail,
         return $this->hasManyThrough(Permission::class, Role::class);
     }
 
-    public function createdBy()
+    public function createdBy(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class, 'created_by', 'id', 'users');
     }
 
-    public function updatedBy()
+    public function updatedBy(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'updated_by');
+        return $this->belongsTo(User::class, 'updated_by', 'id', 'users');
     }
+
+
 }

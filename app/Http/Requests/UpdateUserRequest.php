@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\StatusEnum;
+use App\Enums\UserStatusEnum;
 use App\Traits\Requests\UserRequestTrait;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
@@ -52,7 +52,7 @@ class UpdateUserRequest extends FormRequest
                         });
                 }),
             ],
-            'status' => ['nullable', Rule::enum(StatusEnum::class)],
+            'status' => ['nullable', Rule::enum(UserStatusEnum::class)],
             'amount' => ['nullable', 'numeric'],
             'description' => ['nullable', 'string'],
             "image" => ["nullable", "image", "mimes:jpeg,png,jpg,gif,svg,webp,ico", "max:2048"],

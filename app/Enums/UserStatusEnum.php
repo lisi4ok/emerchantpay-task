@@ -6,7 +6,7 @@ namespace App\Enums;
 
 use App\Traits\ArrayableEnumeration;
 
-enum StatusEnum: int
+enum UserStatusEnum: int
 {
     use ArrayableEnumeration;
 

@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Enums\OrderStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Role extends Model
+class Order extends Model
 {
-    /** @use HasFactory<\Database\Factories\RoleFactory> */
+    /** @use HasFactory<\Database\Factories\OrderFactory> */
     use HasFactory;
 
     /**
@@ -16,10 +17,17 @@ class Role extends Model
      *
      * @var string
      */
-    protected $table = 'roles';
+    protected $table = 'orders';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
-        'name',
+        'title',
+        'amount',
+        'status',
     ];
 
     /**
@@ -30,20 +38,14 @@ class Role extends Model
     protected function casts(): array
     {
         return [
+            'status' => OrderStatusEnum::class,
             'created_at' => 'datetime:Y-m-d H:i:s',
             'updated_at' => 'datetime:Y-m-d H:i:s',
         ];
     }
 
-    public function users(): BelongsToMany
+    public function user(): BelongsTo
     {
-        return $this->belongsToMany(User::class, 'users_roles',
-            'role_id', 'user_id');
-    }
-
-    public function permissions(): BelongsToMany
-    {
-        return $this->belongsToMany(Permission::class, 'permissions_roles',
-            'role_id', 'permission_id');
+        return $this->belongsTo(User::class, 'user_id','id', 'users');
     }
 }

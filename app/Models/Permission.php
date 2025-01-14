@@ -22,6 +22,19 @@ class Permission extends Model
         'name',
     ];
 
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'created_at' => 'datetime:Y-m-d H:i:s',
+            'updated_at' => 'datetime:Y-m-d H:i:s',
+        ];
+    }
+
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'permissions_roles',

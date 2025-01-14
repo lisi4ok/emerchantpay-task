@@ -6,11 +6,12 @@ namespace App\Enums;
 
 use App\Traits\ArrayableEnumeration;
 
-enum RoleEnum: int
+enum OrderStatusEnum: int
 {
     use ArrayableEnumeration;
 
-    case USER = 0;
-    case MERCHANT = 1;
-    case ADMINISTRATOR = 2;
+    case PENDING = 0;
+    case COMPLETED = 1;
+    case CANCELLED = 2;
+    case REFUNDED = 3;
 }
