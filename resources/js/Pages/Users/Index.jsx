@@ -55,7 +55,7 @@ export default function Index({ auth, users, queryParams = null, success }) {
             href={route("users.create")}
             className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600"
           >
-            Add new
+            Create new
           </Link>
         </div>
       }

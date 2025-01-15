@@ -29,12 +29,12 @@ export default function Show({ auth, user, tasks, queryParams }) {
                     <p className="mt-1">{user.id}</p>
                   </div>
                   <div className="mt-4">
-                    <label className="font-bold text-lg">User Name</label>
+                    <label className="font-bold text-lg">Name</label>
                     <p className="mt-1">{user.name}</p>
                   </div>
 
                   <div className="mt-4">
-                    <label className="font-bold text-lg">User Status</label>
+                    <label className="font-bold text-lg">Status</label>
                     <p className="mt-1">
                       <span
                         className={
@@ -64,7 +64,7 @@ export default function Show({ auth, user, tasks, queryParams }) {
               </div>
 
               <div className="mt-4">
-                <label className="font-bold text-lg">User Description</label>
+                <label className="font-bold text-lg">Description</label>
                 <p className="mt-1">{user.description}</p>
               </div>
             </div>

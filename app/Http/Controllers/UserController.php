@@ -7,114 +7,104 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $query = User::query();
 
-        $sortField = request("sort_field", 'created_at');
-        $sortDirection = request("sort_direction", "desc");
+        $sortField = request('sort_field', 'created_at');
+        $sortDirection = request('sort_direction', 'desc');
 
-        if (request("name")) {
-            $query->where("name", "like", "%" . request("name") . "%");
+        if (request('name')) {
+            $query->where('name', 'like', '%' . request('name') . '%');
         }
-        if (request("email")) {
-            $query->where("email", "like", "%" . request("email") . "%");
+        if (request('email')) {
+            $query->where('email', 'like', '%' . request('email') . '%');
         }
 
         $users = $query->orderBy($sortField, $sortDirection)
             ->paginate(10)
             ->onEachSide(1);
 
-        return inertia("Users/Index", [
-            "users" => UserResource::collection($users),
+        return Inertia::render('Users/Index', [
+            'users' => UserResource::collection($users),
             'queryParams' => request()->query() ?: null,
             'success' => session('success'),
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        return inertia("Users/Create", [
-          'roles' => Role::all(),
+        return Inertia::render('Users/Create', [
+            'roles' => Role::all(),
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreUserRequest $request)
     {
-        $data = $request->validated();
-        $data['email_verified_at'] = time();
-        $data['password'] = bcrypt($data['password']);
-        User::create($data);
+        try {
+            DB::transaction(function () use ($request) {
+                $user = User::create($request->validated());
+                $user->roles()->sync($request->get('roles'));
+            });
+        } catch (\Throwable $exception) {
+            return redirect()->back()->withErrors(['error' => $exception->getMessage()]);
+        }
 
-        return to_route('users.index')
-            ->with('success', 'User was created');
+        return redirect()->route('users.index')->with('success', 'User created');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(int $id)
     {
         $user = User::with('roles')->findOrFail($id);
 
-        return inertia('Users/Show', [
+        return Inertia::render('Users/Show', [
             'user' => $user,
             'userRoles' => $user->roles->pluck('id'),
             'roles' => Role::all(),
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(int $id)
     {
         $user = User::with('roles')->findOrFail($id);
 
-        return inertia('Users/Edit', [
+        return Inertia::render('Users/Edit', [
             'user' => $user,
             'userRoles' => $user->roles->pluck('id'),
             'roles' => Role::all(),
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(UpdateUserRequest $request, int $id)
     {
-        $data = $request->validated();
-        $password = $data['password'] ?? null;
-        if ($password) {
-            $data['password'] = bcrypt($password);
-        } else {
-            unset($data['password']);
-        }
-        $user->update($data);
+        $user = User::with('roles')->findOrFail($id);
 
-        return to_route('users.index')
-            ->with('success', "User was updated");
+        try {
+            DB::transaction(function () use ($user, $request) {
+                $data = $request->validated();
+                $password = $data['password'] ?? null;
+                if (!$password) {
+                    unset($data['password']);
+                }
+                $user->update($data);
+                $user->roles()->sync($request->get('roles'));
+            });
+        } catch (\Throwable $exception) {
+            return redirect()->back()->withErrors(['error' => $exception->getMessage()]);
+        }
+
+        return redirect()->route('users.index')->with('success', 'User updated');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
          User::findOrFail($id)->delete();
-        return to_route('users.index')
-            ->with('success', "User was deleted");
+
+        return redirect()->route('users.index')->with('success', 'User deleted');
     }
 }

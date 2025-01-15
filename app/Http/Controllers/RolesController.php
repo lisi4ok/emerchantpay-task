@@ -3,82 +3,81 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\RoleResource;
+use App\Models\Permission;
 use App\Models\Role;
 use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
+use Illuminate\Http\RedirectResponse;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class RolesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): Response
     {
         $query = Role::query();
 
-        $sortField = request("sort_field", 'created_at');
-        $sortDirection = request("sort_direction", "desc");
+        $sortField = request('sort_field', 'created_at');
+        $sortDirection = request('sort_direction', 'desc');
 
-        if (request("name")) {
-            $query->where("name", "like", "%" . request("name") . "%");
+        if (request('name')) {
+            $query->where('name', 'like', '%' . request('name') . '%');
         }
 
         $roles = $query->orderBy($sortField, $sortDirection)
             ->paginate(10)
             ->onEachSide(1);
 
-        return inertia("Roles/Index", [
-            "roles" => RoleResource::collection($roles),
+        return Inertia::render('Roles/Index', [
+            'roles' => RoleResource::collection($roles),
             'queryParams' => request()->query() ?: null,
             'success' => session('success'),
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(): Response
     {
-        return inertia("Roles/Create");
+        return Inertia::render('Roles/Create', [
+            'permissions' => Permission::all(),
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreRoleRequest $request)
+    public function store(StoreRoleRequest $request): RedirectResponse
     {
-        //
+        Role::create($request->validated());
+
+        return redirect()->route('roles.index')->with('success', 'Role created');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Role $role)
+    public function show(int $id): Response
     {
-        //
+        $role = Role::with('permissions')->findOrFail($id);
+
+        return Inertia::render('Roles/Show', [
+            'role' => $role,
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Role $role)
+    public function edit(int $id): Response
     {
-        //
+        $role = Role::with('permissions')->findOrFail($id);
+
+        return Inertia::render('Roles/Edit', [
+            'role' => $role,
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateRoleRequest $request, Role $role)
+    public function update(UpdateRoleRequest $request, Role $role): RedirectResponse
     {
-        //
+        $role->update($request->validated());
+
+        return redirect()->route('roles.index')->with('success', 'Roles updated');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Role $role)
+    public function destroy(int $id): RedirectResponse
     {
-        //
+        Role::findOrFail($id)->delete();
+
+        return redirect()->route('roles.index')->with('success', 'Role deleted');
     }
 }

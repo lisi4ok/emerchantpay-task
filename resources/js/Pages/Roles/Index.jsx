@@ -55,7 +55,7 @@ export default function Index({ auth, roles, queryParams = null, success }) {
             href={route("roles.create")}
             className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600"
           >
-            Add new
+            Create new
           </Link>
         </div>
       }
@@ -111,7 +111,7 @@ export default function Index({ auth, roles, queryParams = null, success }) {
                         <TextInput
                           className="w-full"
                           defaultValue={queryParams.name}
-                          placeholder="Role Name"
+                          placeholder="Name"
                           onBlur={(e) =>
                             searchFieldChanged("name", e.target.value)
                           }

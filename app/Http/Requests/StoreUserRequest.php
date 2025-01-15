@@ -6,8 +6,10 @@ use App\Enums\UserStatusEnum;
 use App\Traits\Requests\UserRequestTrait;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\Validator;
 
 class StoreUserRequest extends FormRequest
 {
@@ -29,10 +31,10 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => ["required", "string", "max:255"],
-            "email" => ["required", "string", "email", "unique:users,email"],
-            "password" => [
-                "required",
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'unique:users,email'],
+            'password' => [
+                'required',
                 'confirmed',
                 Password::min(8)->letters()->symbols(),
             ],
@@ -51,7 +53,10 @@ class StoreUserRequest extends FormRequest
             'status' => ['nullable', Rule::enum(UserStatusEnum::class)],
             'amount' => ['nullable', 'numeric'],
             'description' => ['nullable', 'string'],
-            "image" => ["nullable", "image", "mimes:jpeg,png,jpg,gif,svg,webp,ico", "max:2048"],
+            'role' => ['required', 'numeric'],
+            'roles' => ['nullable', 'array'],
+            'roles.*' => ['required_with:roles', 'integer'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg,webp,ico', 'max:2048'],
         ];
     }
 }

@@ -16,25 +16,17 @@ export default function Create({ auth, user, roles, userRoles }) {
     description: user.description || "",
     password: "",
     password_confirmation: "",
+    roles: userRoles || [],
+    role: user.role || "",
     _method: "PUT",
   });
 
   const onSubmit = (e) => {
     e.preventDefault();
+    data['roles'] = Array.from(document.querySelectorAll('input[name="roles[]"]:checked')).map((p) => p.value);
 
     post(route("users.update", user.id));
   };
-
-  const [selectedIds, setSelectedId] = useState([]);
-
-  const handleCheckboxChange = (event) => {
-    const checkedId = event.target.value;
-    if (event.target.checked) {
-      setSelectedId([...selectedIds,checkedId])
-    } else {
-      setSelectedId(selectedIds.filter(id=>id !== checkedId))
-    }
-  }
 
     return (
     <AuthenticatedLayout
@@ -57,10 +49,10 @@ export default function Create({ auth, user, roles, userRoles }) {
               className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg"
             >
               <div className="mt-4">
-                <InputLabel htmlFor="user_name" value="User Name"/>
+                <InputLabel htmlFor="name" value="Name"/>
 
                 <TextInput
-                  id="user_name"
+                  id="name"
                   type="text"
                   name="name"
                   value={data.name}
@@ -72,10 +64,10 @@ export default function Create({ auth, user, roles, userRoles }) {
                 <InputError message={errors.name} className="mt-2"/>
               </div>
               <div className="mt-4">
-                <InputLabel htmlFor="user_email" value="User Email"/>
+                <InputLabel htmlFor="email" value="Email"/>
 
                 <TextInput
-                  id="user_email"
+                  id="email"
                   type="text"
                   name="email"
                   value={data.email}
@@ -87,10 +79,10 @@ export default function Create({ auth, user, roles, userRoles }) {
               </div>
 
               <div className="mt-4">
-                <InputLabel htmlFor="user_password" value="Password"/>
+                <InputLabel htmlFor="password" value="Password"/>
 
                 <TextInput
-                  id="user_password"
+                  id="password"
                   type="password"
                   name="password"
                   value={data.password}
@@ -103,12 +95,12 @@ export default function Create({ auth, user, roles, userRoles }) {
 
               <div className="mt-4">
                 <InputLabel
-                  htmlFor="user_password_confirmation"
+                  htmlFor="password_confirmation"
                   value="Confirm Password"
                 />
 
                 <TextInput
-                  id="user_password_confirmation"
+                  id="password_confirmation"
                   type="password"
                   name="password_confirmation"
                   value={data.password_confirmation}
@@ -125,10 +117,10 @@ export default function Create({ auth, user, roles, userRoles }) {
               </div>
 
               <div className="mt-4">
-                <InputLabel htmlFor="user_amount" value="User Amount"/>
+                <InputLabel htmlFor="amount" value="Amount"/>
 
                 <TextInput
-                  id="user_amount"
+                  id="amount"
                   type="text"
                   name="amount"
                   value={data.amount}
@@ -140,10 +132,10 @@ export default function Create({ auth, user, roles, userRoles }) {
               </div>
 
               <div className="mt-4">
-                <InputLabel htmlFor="user_description" value="User Description"/>
+                <InputLabel htmlFor="description" value="Description"/>
 
                 <TextAreaInput
-                  id="user_description"
+                  id="description"
                   type="text"
                   name="description"
                   value={data.description}
@@ -154,45 +146,45 @@ export default function Create({ auth, user, roles, userRoles }) {
                 <InputError message={errors.description} className="mt-2"/>
               </div>
 
+              <div className="mt-4">
+                <InputLabel htmlFor="role_id" value="Role"/>
 
-              <div className="mt-4 block">
-                {
-                  roles.map(role => {
-                    return (
-                      <div class="custom-control custom-checkbox">
+                <SelectInput
+                  name="role"
+                  id="role"
+                  className="mt-1 block w-full"
+                  onChange={(e) => setData("role", e.target.value)}
+                >
+                  <option value="">Select Role</option>
+                  {roles.map((role) => (
+                    <option value={role.id} key={role.id} selected={userRoles.includes(role.id)}>
+                      {role.name}
+                    </option>
+                  ))}
+                </SelectInput>
 
-                        <input
-                          type="checkbox"
-                          value={role.id}
-                          checked={userRoles.includes(role.id)}
-                          onChange={(event) => handleCheckboxChange(event)}
-                        />
-                        <label class="custom-control-label" for={role.id}>{role.name}</label>
-                      </div>
-                    )
-                  })
-                }
-
+                <InputError message={errors.role} className="mt-2"/>
               </div>
 
               <div className="mt-4 block">
                 {
                   roles.map(role => {
                     return (
-                      <label className="flex items-center">
+                      <label className="flex items-center" key={role.id}>
                         <Checkbox
-                          name="roles"
+                          name="roles[]"
                           value={role.id}
-                          //checked={userRoles.includes(role.id)}
-                          onChange={(event) => handleCheckboxChange(event)}
+                          defaultChecked={userRoles.includes(role.id)}
                         />
                         <span className="ms-2 text-sm text-gray-600 dark:text-gray-400">
-                                              {role.name}
-                                          </span>
+                          {role.name}
+                        </span>
                       </label>
                     );
                   })
                 }
+
+                <InputError message={errors.roles} className="mt-2"/>
               </div>
 
               <div className="mt-4 text-right">

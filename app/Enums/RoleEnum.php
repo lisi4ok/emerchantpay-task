@@ -10,7 +10,7 @@ enum RoleEnum: int
 {
     use ArrayableEnumeration;
 
-    case USER = 0;
-    case MERCHANT = 1;
-    case ADMINISTRATOR = 2;
+    case USER = 1;
+    case MERCHANT = 2;
+    case ADMINISTRATOR = 3;
 }

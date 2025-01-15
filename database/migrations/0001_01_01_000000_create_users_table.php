@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Enums\RoleEnum;
 
 return new class extends Migration
 {
@@ -13,6 +14,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->unsignedTinyInteger('role')->default(RoleEnum::USER->value);
             $table->string('name')->index();
             $table->string('slug')->unique();
             $table->string('email')->unique();
@@ -21,12 +23,9 @@ return new class extends Migration
             $table->text('description')->nullable()->default(null);
             $table->decimal('amount')->default(0.0);
             $table->rememberToken();
-            $table->unsignedBigInteger('created_by')->nullable();
-            $table->unsignedBigInteger('updated_by')->nullable();
+            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
-
-            $table->foreign('created_by')->references('id')->on('users');
-            $table->foreign('updated_by')->references('id')->on('users');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

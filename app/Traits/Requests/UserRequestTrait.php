@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Traits\Requests;
 
-use App\Enums\StatusEnum;
+use App\Enums\UserStatusEnum;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
 
@@ -20,7 +20,10 @@ trait UserRequestTrait
                 $validator->setValue('amount', (double) $amount);
             }
             if (! $validator->getValue('status')) {
-                $validator->setValue('status', StatusEnum::ACTIVE->value);
+                $validator->setValue('status', UserStatusEnum::ACTIVE->value);
+            }
+            if (! $validator->getValue('email_verified_at')) {
+                $validator->setValue('email_verified_at', now());
             }
         });
     }

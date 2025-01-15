@@ -7,9 +7,10 @@ use App\Enums\UserStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Sluggable\HasSlug;
@@ -61,6 +62,8 @@ class User extends Authenticatable implements ImageInterface // MustVerifyEmail,
         'remember_token',
     ];
 
+    protected ?Collection $permissions;
+
     protected static function boot()
     {
         parent::boot();
@@ -108,15 +111,41 @@ class User extends Authenticatable implements ImageInterface // MustVerifyEmail,
             ->usingLanguage(config('app.locale'));
     }
 
+    public function activeScope()  {
+
+    }
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'users_roles',
-            'user_id', 'role_id');
+            'user_id', 'role_id')->with('permissions');
     }
 
-    public function permissions(): HasManyThrough
+    public function scopeActive(Builder $query): void
     {
-        return $this->hasManyThrough(Permission::class, Role::class);
+        $query->where('status', UserStatusEnum::ACTIVE->value);
+    }
+
+    public function scopeInactive(Builder $query): void
+    {
+        $query->where('status', UserStatusEnum::INACTIVE->value);
+    }
+
+    public function scopePermissions(Builder $query): void
+    {
+        $query->select(['permissions.id', 'permissions.name'])
+              ->join('users_roles', 'users.id', '=', 'users_roles.user_id')
+              ->join('permissions_roles', 'users_roles.role_id', '=', 'permissions_roles.role_id')
+              ->join('permissions', 'permissions_roles.permission_id', '=', 'permissions.id')
+              ->groupBy(['permissions.id']);
+    }
+
+    public function getPermissionsAttribute()
+    {
+        if (empty($this->permissions)) {
+            $this->permissions = $this->permissions()->pluck('name','id');
+        }
+
+        return $this->permissions;
     }
 
     public function createdBy(): BelongsTo

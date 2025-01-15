@@ -6,8 +6,10 @@ use App\Enums\UserStatusEnum;
 use App\Traits\Requests\UserRequestTrait;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\Validator;
 
 class UpdateUserRequest extends FormRequest
 {
@@ -27,13 +29,12 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        $user = $this->route("user");
         return [
             "name" => ["required", "string", "max:255"],
             "email" => [
                 "required",
                 "email",
-                Rule::unique('users')->ignore($user->id),
+                Rule::unique('users')->ignore($this->route('user')),
             ],
             "password" => [
                 'nullable',
@@ -55,6 +56,9 @@ class UpdateUserRequest extends FormRequest
             'status' => ['nullable', Rule::enum(UserStatusEnum::class)],
             'amount' => ['nullable', 'numeric'],
             'description' => ['nullable', 'string'],
+            'role' => ['required', 'numeric'],
+            'roles' => ['nullable', 'array'],
+            'roles.*' => ['required_with:roles', 'integer'],
             "image" => ["nullable", "image", "mimes:jpeg,png,jpg,gif,svg,webp,ico", "max:2048"],
         ];
     }
