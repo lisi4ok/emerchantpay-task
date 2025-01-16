@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\MoneyTypeEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreOrderRequest extends FormRequest
 {
@@ -11,7 +13,7 @@ class StoreOrderRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +24,11 @@ class StoreOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => ['required', 'string', 'max:255'],
+            'type' => ['nullable', Rule::enum(MoneyTypeEnum::class)],
+            'user_id' => ['required', 'exists:users,id'],
+            'amount' => ['required', 'numeric'],
+            'description' => ['nullable', 'string'],
         ];
     }
 }

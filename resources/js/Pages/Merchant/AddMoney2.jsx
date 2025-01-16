@@ -1,3 +1,83 @@
+import React, { useState } from "react";
+import { Steps } from "antd";
+import { Provider } from "@/Components/MultiStepFormContext";
+import Details from "./Details";
+import Address from "./Address";
+import Review from "./Review";
+
+const { Step } = Steps;
+
+const detailsInitialState = {
+  type: "",
+};
+
+const addressInitialState = {
+  address1: "",
+  address2: "",
+  city: ""
+};
+
+const renderStep = (step) => {
+  switch (step) {
+    case 0:
+      return <Details />;
+    case 1:
+      return <Address />;
+    case 2:
+      return <Review />;
+    default:
+      return null;
+  }
+};
+
+const MultiStepForm = () => {
+  const [details, setDetails] = useState(detailsInitialState);
+  const [address, setAddress] = useState(addressInitialState);
+  const [currentStep, setCurrentStep] = useState(0);
+
+  const next = () => {
+    if (currentStep === 2) {
+      setCurrentStep(0);
+      setDetails(detailsInitialState);
+      setAddress(addressInitialState);
+      return;
+    }
+    setCurrentStep(currentStep + 1);
+  };
+  const prev = () => setCurrentStep(currentStep - 1);
+  return (
+    <Provider value={{ details, setDetails, next, prev, address, setAddress }}>
+      <Steps current={currentStep}>
+        <Step title={"Fill in your details"} />
+        <Step title={"Address details"} />
+        <Step title={"Review and Save"} />
+      </Steps>
+      <main>{renderStep(currentStep)}</main>
+    </Provider>
+  );
+};
+export default MultiStepForm;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import TextInput from "@/Components/TextInput";
@@ -9,9 +89,6 @@ import Checkbox from "@/Components/Checkbox";
 
 export default function AddMoney({ auth, users }) {
   const { data, setData, post, errors, reset } = useForm({
-    title: "",
-    description: "",
-    type: "",
     user_id: "",
     amount: "",
   });
@@ -20,6 +97,8 @@ export default function AddMoney({ auth, users }) {
     e.preventDefault();
     post(route("merchant.money.add"));
   };
+
+  console.log(users);
 
   return (
     <AuthenticatedLayout user={auth.user}>
@@ -32,40 +111,6 @@ export default function AddMoney({ auth, users }) {
               onSubmit={onSubmit}
               className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg"
             >
-
-              <div className="mt-4">
-                <InputLabel htmlFor="title" value="Title"/>
-
-                <TextInput
-                  id="title"
-                  type="text"
-                  name="title"
-                  value={data.title}
-                  className="mt-1 block w-full"
-                  isFocused={true}
-                  onChange={(e) => setData("title", e.target.value)}
-                />
-
-                <InputError message={errors.title} className="mt-2"/>
-              </div>
-
-              <div className="mt-4">
-                <InputLabel htmlFor="type" value="Type"/>
-
-                <SelectInput
-                  name="type"
-                  id="type"
-                  className="mt-1 block w-full"
-                  onChange={(e) => setData("type", e.target.value)}
-                >
-                  <option value="">Select Type</option>
-                  <option value="order" key="order">Order</option>
-                </SelectInput>
-
-                <InputError message={errors.type} className="mt-2"/>
-              </div>
-
-
               <div className="mt-4">
                 <InputLabel htmlFor="amount" value="Amount"/>
 
@@ -81,7 +126,6 @@ export default function AddMoney({ auth, users }) {
 
                 <InputError message={errors.amount} className="mt-2"/>
               </div>
-
 
               <div className="mt-4">
                 <InputLabel htmlFor="user_id" value="User"/>
@@ -102,22 +146,6 @@ export default function AddMoney({ auth, users }) {
 
                 <InputError message={errors.user_id} className="mt-2"/>
               </div>
-
-              <div className="mt-4">
-                <InputLabel htmlFor="description" value="Description"/>
-
-                <TextAreaInput
-                  id="description"
-                  type="text"
-                  name="description"
-                  value={data.description}
-                  className="mt-1 block w-full"
-                  onChange={(e) => setData("description", e.target.value)}
-                />
-
-                <InputError message={errors.description} className="mt-2"/>
-              </div>
-
 
               <div className="mt-4 text-right">
                 <Link
