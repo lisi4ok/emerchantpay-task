@@ -1,38 +1,39 @@
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
-import TextInput from "@/Components/TextInput";
 import SelectInput from "@/Components/SelectInput";
+import TextAreaInput from "@/Components/TextAreaInput";
+import Checkbox from "@/Components/Checkbox";
+import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
-import TextAreaInput from "../../../../laravel11-react-spa/resources/js/Components/TextAreaInput.jsx";
-import Checkbox from "@/Components/Checkbox.jsx";
 
-export default function Create({ auth, roles }) {
+export default function Create({ auth, user, roles, userRoles }) {
   const { data, setData, post, errors, reset } = useForm({
-    name: "",
-    email: "",
+    name: user.name || "",
+    email: user.email || "",
+    amount: user.amount || "",
+    description: user.description || "",
     password: "",
     password_confirmation: "",
-    amount: "",
-    description: "",
-    roles: [],
-    role: "",
+    roles: userRoles || [],
+    role: user.role || "",
+    _method: "PUT",
   });
 
   const onSubmit = (e) => {
     e.preventDefault();
-
     data['roles'] = Array.from(document.querySelectorAll('input[name="roles[]"]:checked')).map((p) => p.value);
-    post(route("users.store"));
+
+    post(route("admin.users.update", user.id));
   };
 
-  return (
+    return (
     <AuthenticatedLayout
       user={auth.user}
       header={
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Create new User
+            Edit user "{user.name}"
           </h2>
         </div>
       }
@@ -114,7 +115,6 @@ export default function Create({ auth, roles }) {
                 />
               </div>
 
-
               <div className="mt-4">
                 <InputLabel htmlFor="amount" value="Amount"/>
 
@@ -156,7 +156,10 @@ export default function Create({ auth, roles }) {
                 >
                   <option value="">Select Role</option>
                   {roles.map((role) => (
-                    <option value={role.id} key={role.id}>
+                    <option value={role.id}
+                            key={role.id}
+                            selected={userRoles.includes(role.id)}
+                    >
                       {role.name}
                     </option>
                   ))}
@@ -173,6 +176,7 @@ export default function Create({ auth, roles }) {
                         <Checkbox
                           name="roles[]"
                           value={role.id}
+                          defaultChecked={userRoles.includes(role.id)}
                         />
                         <span className="ms-2 text-sm text-gray-600 dark:text-gray-400">
                           {role.name}
@@ -187,7 +191,7 @@ export default function Create({ auth, roles }) {
 
               <div className="mt-4 text-right">
                 <Link
-                  href={route("users.index")}
+                  href={route("admin.users.index")}
                   className="bg-gray-100 py-1 px-3 text-gray-800 rounded shadow transition-all hover:bg-gray-200 mr-2"
                 >
                   Cancel
@@ -202,5 +206,5 @@ export default function Create({ auth, roles }) {
         </div>
       </div>
     </AuthenticatedLayout>
-  );
+    );
 }

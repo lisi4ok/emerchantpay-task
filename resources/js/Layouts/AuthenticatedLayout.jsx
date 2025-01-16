@@ -2,6 +2,10 @@ import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
+import AdminNav from '@/Partials/AdminNav';
+import MerchantNav from '@/Partials/MerchantNav';
+import AdminResponsiveNav from '@/Partials/AdminResponsiveNav';
+import MerchantResponsiveNav from '@/Partials/MerchantResponsiveNav';
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -30,18 +34,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                 >
                                     Dashboard
                                 </NavLink>
-                                <NavLink
-                                    href={route('users.index')}
-                                    active={route().current("users.index")}
-                                >
-                                    Users
-                                </NavLink>
-                                <NavLink
-                                    href={route('roles.index')}
-                                    active={route().current("roles.index")}
-                                >
-                                    Roles
-                                </NavLink>
+                              {(user.role == 3) ? <AdminNav /> : <MerchantNav />}
                             </div>
                         </div>
 
@@ -146,18 +139,7 @@ export default function AuthenticatedLayout({ header, children }) {
                         >
                             Dashboard
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            href={route('users.index')}
-                            active={route().current('users.index')}
-                        >
-                            Users
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            href={route('roles.index')}
-                            active={route().current('roles.index')}
-                        >
-                            Roles
-                        </ResponsiveNavLink>
+                      {(user.role == 3) ? <AdminResponsiveNav /> : <MerchantResponsiveNav />}
                     </div>
 
                     <div className="border-t border-gray-200 pb-1 pt-4 dark:border-gray-600">

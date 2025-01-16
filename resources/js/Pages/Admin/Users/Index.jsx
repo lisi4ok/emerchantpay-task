@@ -1,10 +1,10 @@
 import Pagination from "@/Components/Pagination";
 import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, Link, router } from "@inertiajs/react";
 import TableHeading from "@/Components/TableHeading";
+import { Head, Link, router } from "@inertiajs/react";
 
-export default function Index({ auth, roles, queryParams = null, success }) {
+export default function Index({ auth, users, queryParams = null, success }) {
   queryParams = queryParams || {};
   const searchFieldChanged = (name, value) => {
     if (value) {
@@ -13,7 +13,7 @@ export default function Index({ auth, roles, queryParams = null, success }) {
       delete queryParams[name];
     }
 
-    router.get(route("roles.index"), queryParams);
+    router.get(route("admin.users.index"), queryParams);
   };
 
   const onKeyPress = (name, e) => {
@@ -33,14 +33,14 @@ export default function Index({ auth, roles, queryParams = null, success }) {
       queryParams.sort_field = name;
       queryParams.sort_direction = "asc";
     }
-    router.get(route("roles.index"), queryParams);
+    router.get(route("users.index"), queryParams);
   };
 
-  const deleteRole = (role) => {
-    if (!window.confirm("Are you sure you want to delete the role?")) {
+  const deleteUser = (user) => {
+    if (!window.confirm("Are you sure you want to delete the user?")) {
       return;
     }
-    router.delete(route("roles.destroy", role.id));
+    router.delete(route("admin.users.destroy", user.id));
   };
 
   return (
@@ -49,10 +49,10 @@ export default function Index({ auth, roles, queryParams = null, success }) {
       header={
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Roles
+            Users
           </h2>
           <Link
-            href={route("roles.create")}
+            href={route("admin.users.create")}
             className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600"
           >
             Create new
@@ -60,7 +60,7 @@ export default function Index({ auth, roles, queryParams = null, success }) {
         </div>
       }
     >
-      <Head title="Roles" />
+      <Head title="Users" />
 
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -93,6 +93,24 @@ export default function Index({ auth, roles, queryParams = null, success }) {
                       </TableHeading>
 
                       <TableHeading
+                        name="email"
+                        sort_field={queryParams.sort_field}
+                        sort_direction={queryParams.sort_direction}
+                        sortChanged={sortChanged}
+                      >
+                        Email
+                      </TableHeading>
+
+                        <TableHeading
+                            name="amount"
+                            sort_field={queryParams.sort_field}
+                            sort_direction={queryParams.sort_direction}
+                            sortChanged={sortChanged}
+                        >
+                            Amount
+                        </TableHeading>
+
+                      <TableHeading
                         name="created_at"
                         sort_field={queryParams.sort_field}
                         sort_direction={queryParams.sort_direction}
@@ -111,11 +129,22 @@ export default function Index({ auth, roles, queryParams = null, success }) {
                         <TextInput
                           className="w-full"
                           defaultValue={queryParams.name}
-                          placeholder="Name"
+                          placeholder="User Name"
                           onBlur={(e) =>
                             searchFieldChanged("name", e.target.value)
                           }
                           onKeyPress={(e) => onKeyPress("name", e)}
+                        />
+                      </th>
+                      <th className="px-3 py-3">
+                        <TextInput
+                          className="w-full"
+                          defaultValue={queryParams.email}
+                          placeholder="User Email"
+                          onBlur={(e) =>
+                            searchFieldChanged("email", e.target.value)
+                          }
+                          onKeyPress={(e) => onKeyPress("email", e)}
                         />
                       </th>
                       <th className="px-3 py-3"></th>
@@ -123,27 +152,35 @@ export default function Index({ auth, roles, queryParams = null, success }) {
                     </tr>
                   </thead>
                   <tbody>
-                    {roles.data.map((role) => (
+                    {users.data.map((user) => (
                       <tr
                         className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                        key={role.id}
+                        key={user.id}
                       >
-                        <td className="px-3 py-2">{role.id}</td>
+                        <td className="px-3 py-2">{user.id}</td>
                         <th className="px-3 py-2 text-nowrap">
-                          {role.name}
+                          {user.name}
                         </th>
+                        <td className="px-3 py-2">{user.email}</td>
+                        <td className="px-3 py-2">{user.amount}</td>
                         <td className="px-3 py-2 text-nowrap">
-                          {role.created_at}
+                          {user.created_at}
                         </td>
                         <td className="px-3 py-2 text-nowrap">
                           <Link
-                            href={route("roles.edit", role.id)}
+                            href={route("admin.users.show", user.id)}
+                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1"
+                          >
+                            View
+                          </Link>
+                          <Link
+                            href={route("admin.users.edit", user.id)}
                             className="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1"
                           >
                             Edit
                           </Link>
                           <button
-                            onClick={(e) => deleteRole(role)}
+                            onClick={(e) => deleteUser(user)}
                             className="font-medium text-red-600 dark:text-red-500 hover:underline mx-1"
                           >
                             Delete
@@ -154,7 +191,7 @@ export default function Index({ auth, roles, queryParams = null, success }) {
                   </tbody>
                 </table>
               </div>
-              <Pagination links={roles.meta.links} />
+              <Pagination links={users.meta.links} />
             </div>
           </div>
         </div>

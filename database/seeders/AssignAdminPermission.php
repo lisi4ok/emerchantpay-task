@@ -28,7 +28,7 @@ class AssignAdminPermission extends BaseSeeder
                 \DB::table('users_roles')->insert(['user_id' => $user->id, 'role_id' => $role->id]);
             }
 
-            $hasPermissions = \DB::table('permissions_roles')->where(['role_id' => $role->id])->count();
+            $hasPermissions = \DB::table('roles_permissions')->where(['role_id' => $role->id])->count();
             if ($hasPermissions === 0) {
                 $permissions = Permission::all()->pluck('id')->toArray();
                 $insert = [];
@@ -36,7 +36,7 @@ class AssignAdminPermission extends BaseSeeder
                     $insert[$key]['permission_id'] = $permission;
                     $insert[$key]['role_id'] = $role->id;
                 }
-                \DB::table('permissions_roles')->insert($insert);
+                \DB::table('roles_permissions')->insert($insert);
             }
         } catch (\RuntimeException $exception) {
             $this->error($exception->getMessage());

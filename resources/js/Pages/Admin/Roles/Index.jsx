@@ -1,10 +1,10 @@
 import Pagination from "@/Components/Pagination";
 import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, Link, router } from "@inertiajs/react";
 import TableHeading from "@/Components/TableHeading";
+import { Head, Link, router } from "@inertiajs/react";
 
-export default function Index({ auth, users, queryParams = null, success }) {
+export default function Index({ auth, roles, queryParams = null, success }) {
   queryParams = queryParams || {};
   const searchFieldChanged = (name, value) => {
     if (value) {
@@ -13,7 +13,7 @@ export default function Index({ auth, users, queryParams = null, success }) {
       delete queryParams[name];
     }
 
-    router.get(route("users.index"), queryParams);
+    router.get(route("admin.roles.index"), queryParams);
   };
 
   const onKeyPress = (name, e) => {
@@ -33,14 +33,14 @@ export default function Index({ auth, users, queryParams = null, success }) {
       queryParams.sort_field = name;
       queryParams.sort_direction = "asc";
     }
-    router.get(route("users.index"), queryParams);
+    router.get(route("admin.roles.index"), queryParams);
   };
 
-  const deleteUser = (user) => {
+  const deleteRole = (role) => {
     if (!window.confirm("Are you sure you want to delete the user?")) {
       return;
     }
-    router.delete(route("users.destroy", user.id));
+    router.delete(route("admin.roles.destroy", role.id));
   };
 
   return (
@@ -52,7 +52,7 @@ export default function Index({ auth, users, queryParams = null, success }) {
             Users
           </h2>
           <Link
-            href={route("users.create")}
+            href={route("admin.roles.create")}
             className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600"
           >
             Create new
@@ -60,7 +60,7 @@ export default function Index({ auth, users, queryParams = null, success }) {
         </div>
       }
     >
-      <Head title="Users" />
+      <Head title="Roles" />
 
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -93,24 +93,6 @@ export default function Index({ auth, users, queryParams = null, success }) {
                       </TableHeading>
 
                       <TableHeading
-                        name="email"
-                        sort_field={queryParams.sort_field}
-                        sort_direction={queryParams.sort_direction}
-                        sortChanged={sortChanged}
-                      >
-                        Email
-                      </TableHeading>
-
-                        <TableHeading
-                            name="amount"
-                            sort_field={queryParams.sort_field}
-                            sort_direction={queryParams.sort_direction}
-                            sortChanged={sortChanged}
-                        >
-                            Amount
-                        </TableHeading>
-
-                      <TableHeading
                         name="created_at"
                         sort_field={queryParams.sort_field}
                         sort_direction={queryParams.sort_direction}
@@ -129,22 +111,11 @@ export default function Index({ auth, users, queryParams = null, success }) {
                         <TextInput
                           className="w-full"
                           defaultValue={queryParams.name}
-                          placeholder="User Name"
+                          placeholder="Role Name"
                           onBlur={(e) =>
                             searchFieldChanged("name", e.target.value)
                           }
                           onKeyPress={(e) => onKeyPress("name", e)}
-                        />
-                      </th>
-                      <th className="px-3 py-3">
-                        <TextInput
-                          className="w-full"
-                          defaultValue={queryParams.email}
-                          placeholder="User Email"
-                          onBlur={(e) =>
-                            searchFieldChanged("email", e.target.value)
-                          }
-                          onKeyPress={(e) => onKeyPress("email", e)}
                         />
                       </th>
                       <th className="px-3 py-3"></th>
@@ -152,29 +123,33 @@ export default function Index({ auth, users, queryParams = null, success }) {
                     </tr>
                   </thead>
                   <tbody>
-                    {users.data.map((user) => (
+                    {roles.data.map((role) => (
                       <tr
                         className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                        key={user.id}
+                        key={role.id}
                       >
-                        <td className="px-3 py-2">{user.id}</td>
+                        <td className="px-3 py-2">{role.id}</td>
                         <th className="px-3 py-2 text-nowrap">
-                          {user.name}
+                          {role.name}
                         </th>
-                        <td className="px-3 py-2">{user.email}</td>
-                        <td className="px-3 py-2">{user.amount}</td>
                         <td className="px-3 py-2 text-nowrap">
-                          {user.created_at}
+                          {role.created_at}
                         </td>
                         <td className="px-3 py-2 text-nowrap">
                           <Link
-                            href={route("users.edit", user.id)}
+                            href={route("admin.roles.show", role.id)}
+                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1"
+                          >
+                            View
+                          </Link>
+                          <Link
+                            href={route("admin.roles.edit", role.id)}
                             className="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1"
                           >
                             Edit
                           </Link>
                           <button
-                            onClick={(e) => deleteUser(user)}
+                            onClick={(e) => deleteRole(role)}
                             className="font-medium text-red-600 dark:text-red-500 hover:underline mx-1"
                           >
                             Delete
@@ -185,7 +160,7 @@ export default function Index({ auth, users, queryParams = null, success }) {
                   </tbody>
                 </table>
               </div>
-              <Pagination links={users.meta.links} />
+              <Pagination links={roles.meta.links} />
             </div>
           </div>
         </div>

@@ -11,7 +11,7 @@ class StoreRoleRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,6 +23,8 @@ class StoreRoleRequest extends FormRequest
     {
         return [
             "name" => ["required", "string"],
+            'permissions' => ['nullable', 'array'],
+            'permissions.*' => ['required_with:permissions', 'numeric'],
         ];
     }
 }

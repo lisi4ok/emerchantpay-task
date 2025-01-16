@@ -134,8 +134,8 @@ class User extends Authenticatable implements ImageInterface // MustVerifyEmail,
     {
         $query->select(['permissions.id', 'permissions.name'])
               ->join('users_roles', 'users.id', '=', 'users_roles.user_id')
-              ->join('permissions_roles', 'users_roles.role_id', '=', 'permissions_roles.role_id')
-              ->join('permissions', 'permissions_roles.permission_id', '=', 'permissions.id')
+              ->join('roles_permissions', 'users_roles.role_id', '=', 'roles_permissions.role_id')
+              ->join('permissions', 'roles_permissions.permission_id', '=', 'permissions.id')
               ->groupBy(['permissions.id']);
     }
 

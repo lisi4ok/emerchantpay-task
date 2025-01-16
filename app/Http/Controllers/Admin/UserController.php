@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
@@ -30,7 +31,7 @@ class UserController extends Controller
             ->paginate(10)
             ->onEachSide(1);
 
-        return Inertia::render('Users/Index', [
+        return Inertia::render('Admin/Users/Index', [
             'users' => UserResource::collection($users),
             'queryParams' => request()->query() ?: null,
             'success' => session('success'),
@@ -39,7 +40,7 @@ class UserController extends Controller
 
     public function create()
     {
-        return Inertia::render('Users/Create', [
+        return Inertia::render('Admin/Users/Create', [
             'roles' => Role::all(),
         ]);
     }
@@ -55,14 +56,14 @@ class UserController extends Controller
             return redirect()->back()->withErrors(['error' => $exception->getMessage()]);
         }
 
-        return redirect()->route('users.index')->with('success', 'User created');
+        return redirect()->route('admin.users.index')->with('success', 'User created');
     }
 
     public function show(int $id)
     {
         $user = User::with('roles')->findOrFail($id);
 
-        return Inertia::render('Users/Show', [
+        return Inertia::render('Admin/Users/Show', [
             'user' => $user,
             'userRoles' => $user->roles->pluck('id'),
             'roles' => Role::all(),
@@ -73,7 +74,7 @@ class UserController extends Controller
     {
         $user = User::with('roles')->findOrFail($id);
 
-        return Inertia::render('Users/Edit', [
+        return Inertia::render('Admin/Users/Edit', [
             'user' => $user,
             'userRoles' => $user->roles->pluck('id'),
             'roles' => Role::all(),
@@ -98,13 +99,13 @@ class UserController extends Controller
             return redirect()->back()->withErrors(['error' => $exception->getMessage()]);
         }
 
-        return redirect()->route('users.index')->with('success', 'User updated');
+        return redirect()->route('admin.users.index')->with('success', 'User updated');
     }
 
     public function destroy($id)
     {
          User::findOrFail($id)->delete();
 
-        return redirect()->route('users.index')->with('success', 'User deleted');
+        return redirect()->route('admin.users.index')->with('success', 'User deleted');
     }
 }

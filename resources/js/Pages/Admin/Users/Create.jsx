@@ -1,40 +1,38 @@
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
-import SelectInput from "@/Components/SelectInput";
-import TextAreaInput from "@/Components/TextAreaInput";
-import Checkbox from "@/Components/Checkbox";
 import TextInput from "@/Components/TextInput";
+import SelectInput from "@/Components/SelectInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
-import React, { useState } from "react";
+import TextAreaInput from "@/Components/TextAreaInput";
+import Checkbox from "@/Components/Checkbox";
 
-export default function Create({ auth, user, roles, userRoles }) {
+export default function Create({ auth, roles }) {
   const { data, setData, post, errors, reset } = useForm({
-    name: user.name || "",
-    email: user.email || "",
-    amount: user.amount || "",
-    description: user.description || "",
+    name: "",
+    email: "",
     password: "",
     password_confirmation: "",
-    roles: userRoles || [],
-    role: user.role || "",
-    _method: "PUT",
+    amount: "",
+    description: "",
+    roles: [],
+    role: "",
   });
 
   const onSubmit = (e) => {
     e.preventDefault();
-    data['roles'] = Array.from(document.querySelectorAll('input[name="roles[]"]:checked')).map((p) => p.value);
 
-    post(route("users.update", user.id));
+    data['roles'] = Array.from(document.querySelectorAll('input[name="roles[]"]:checked')).map((p) => p.value);
+    post(route("admin.users.store"));
   };
 
-    return (
+  return (
     <AuthenticatedLayout
       user={auth.user}
       header={
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Edit user "{user.name}"
+            Create new User
           </h2>
         </div>
       }
@@ -116,6 +114,7 @@ export default function Create({ auth, user, roles, userRoles }) {
                 />
               </div>
 
+
               <div className="mt-4">
                 <InputLabel htmlFor="amount" value="Amount"/>
 
@@ -157,7 +156,7 @@ export default function Create({ auth, user, roles, userRoles }) {
                 >
                   <option value="">Select Role</option>
                   {roles.map((role) => (
-                    <option value={role.id} key={role.id} selected={userRoles.includes(role.id)}>
+                    <option value={role.id} key={role.id}>
                       {role.name}
                     </option>
                   ))}
@@ -174,7 +173,6 @@ export default function Create({ auth, user, roles, userRoles }) {
                         <Checkbox
                           name="roles[]"
                           value={role.id}
-                          defaultChecked={userRoles.includes(role.id)}
                         />
                         <span className="ms-2 text-sm text-gray-600 dark:text-gray-400">
                           {role.name}
@@ -189,7 +187,7 @@ export default function Create({ auth, user, roles, userRoles }) {
 
               <div className="mt-4 text-right">
                 <Link
-                  href={route("users.index")}
+                  href={route("admin.users.index")}
                   className="bg-gray-100 py-1 px-3 text-gray-800 rounded shadow transition-all hover:bg-gray-200 mr-2"
                 >
                   Cancel
@@ -204,5 +202,5 @@ export default function Create({ auth, user, roles, userRoles }) {
         </div>
       </div>
     </AuthenticatedLayout>
-    );
+  );
 }
