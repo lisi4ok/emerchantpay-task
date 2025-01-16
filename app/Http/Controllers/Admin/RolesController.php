@@ -15,18 +15,7 @@ class RolesController extends Controller
 {
     public function index()
     {
-        $query = Role::query();
-
-        $sortField = request('sort_field', 'created_at');
-        $sortDirection = request('sort_direction', 'desc');
-
-        if (request('name')) {
-            $query->where('name', 'like', '%' . request('name') . '%');
-        }
-
-        $roles = $query->orderBy($sortField, $sortDirection)
-            ->paginate(10)
-            ->onEachSide(1);
+        $roles = $this->filter(Role::class, [], ['name']);
 
         return Inertia::render('Admin/Roles/Index', [
             'roles' => RoleResource::collection($roles),

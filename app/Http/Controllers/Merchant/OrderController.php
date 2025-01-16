@@ -8,9 +8,9 @@ use App\Models\Transaction;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
-class TransactionsController extends Controller
+class OrderController extends Controller
 {
-    public function index()
+    public function create()
     {
         $transactions = $this->filter(
             Transaction::class,

@@ -2,15 +2,24 @@
 
 namespace App\Http\Controllers\Merchant;
 
+use App\Enums\RoleEnum;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\TransactionResource;
+use App\Http\Resources\UserResource;
 use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
-class TransactionsController extends Controller
+class WalletController extends Controller
 {
-    public function index()
+    public function addMoney()
+    {
+        return Inertia::render('Merchant/AddMoney', [
+            'users' => UserResource::collection(User::where('role', '!=', RoleEnum::ADMINISTRATOR->value)->get()),
+        ]);
+    }
+
+    public function transferMoney()
     {
         $transactions = $this->filter(
             Transaction::class,

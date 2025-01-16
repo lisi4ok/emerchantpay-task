@@ -5,20 +5,21 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\TransactionResource;
 use App\Models\Role;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
-class UserController extends Controller
+class TransactionsController extends Controller
 {
     public function index()
     {
-        $users = $this->filter(User::class, [], ['name', 'email']);
+        $transactions = $this->filter(Transaction::class, [], ['name', 'type', 'amount']);
 
-        return Inertia::render('Admin/Users/Index', [
-            'users' => UserResource::collection($users),
+        return Inertia::render('Admin/Transactions/Index', [
+            'transactions' => TransactionResource::collection($transactions),
             'queryParams' => request()->query() ?: null,
             'success' => session('success'),
         ]);
@@ -26,8 +27,8 @@ class UserController extends Controller
 
     public function create()
     {
-        return Inertia::render('Admin/Users/Create', [
-            'roles' => Role::all(),
+        return Inertia::render('Admin/Transactions/Create', [
+            'transactions' => Transaction::all(),
         ]);
     }
 
@@ -42,14 +43,14 @@ class UserController extends Controller
             return redirect()->back()->withErrors(['error' => $exception->getMessage()]);
         }
 
-        return redirect()->route('admin.users.index')->with('success', 'User created');
+        return redirect()->route('admin.transactions.index')->with('success', 'Transaction created');
     }
 
     public function show(int $id)
     {
         $user = User::with('roles')->findOrFail($id);
 
-        return Inertia::render('Admin/Users/Show', [
+        return Inertia::render('Admin/Transactions/Show', [
             'user' => $user,
             'userRoles' => $user->roles->pluck('id'),
             'roles' => Role::all(),
@@ -60,7 +61,7 @@ class UserController extends Controller
     {
         $user = User::with('roles')->findOrFail($id);
 
-        return Inertia::render('Admin/Users/Edit', [
+        return Inertia::render('Admin/Transactions/Edit', [
             'user' => $user,
             'userRoles' => $user->roles->pluck('id'),
             'roles' => Role::all(),
@@ -85,13 +86,13 @@ class UserController extends Controller
             return redirect()->back()->withErrors(['error' => $exception->getMessage()]);
         }
 
-        return redirect()->route('admin.users.index')->with('success', 'User updated');
+        return redirect()->route('admin.transactions.index')->with('success', 'Transaction updated');
     }
 
     public function destroy($id)
     {
-         User::findOrFail($id)->delete();
+        User::findOrFail($id)->delete();
 
-        return redirect()->route('admin.users.index')->with('success', 'User deleted');
+        return redirect()->route('admin.transactions.index')->with('success', 'Transaction deleted');
     }
 }

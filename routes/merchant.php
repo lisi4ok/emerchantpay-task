@@ -3,11 +3,7 @@
 use App\Http\Middleware\HandleMerchantRole;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Merchant\TransactionsController;
-
-//Route::middleware(['auth', HandleMerchantRole::class])->group(function () {
-//    Route::resource('transactions', TransactionsController::class);
-//})->prefix('merchant')->as('merchant.');
-
+use App\Http\Controllers\Merchant\WalletController;
 
 Route::middleware('auth')->group(function () {
     Route::group([
@@ -16,5 +12,7 @@ Route::middleware('auth')->group(function () {
         'as' => 'merchant.',
     ], function () {
         Route::resource('transactions', TransactionsController::class);
+        Route::get('money/add', [WalletController::class, 'addMoney'])->name('money.add');
+        Route::get('money/transfer', [WalletController::class, 'transferMoney'])->name('money.transfer');
     });
 });

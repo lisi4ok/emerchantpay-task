@@ -12,14 +12,10 @@ class HandleAdminRole
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::guest() || Auth::user()->role != RoleEnum::ADMINISTRATOR->value) {
-            echo '<pre>';
-            var_dump('sdd');
-            exit;
-
-            abort(403);
+        if (Auth::user()->role == RoleEnum::ADMINISTRATOR->value) {
+            return $next($request);
         }
 
-        return $next($request);
+        abort(403);
     }
 }

@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
+class TransactionResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,10 +17,9 @@ class UserResource extends JsonResource
     {
         return [
             "id" => $this->id,
-            "name" => $this->name,
-            "email" => $this->email,
+            "title" => $this->title,
+            "type" => $this->type,
             "amount" => number_format($this->amount, 2, '.', ''),
-            "status" => $this->status,
             "description" => $this->description,
             "created_by" => $this->createdBy,
             "updated_by" => $this->updatedBy,

@@ -8,6 +8,18 @@ export default function MerchantNav({}) {
       >
         Transactions
       </NavLink>
+      <NavLink
+        href={route('merchant.money.add')}
+        active={route().current("merchant.money.add")}
+      >
+        Add Money
+      </NavLink>
+      <NavLink
+        href={route('merchant.money.transfer')}
+        active={route().current("merchant.money.transfer")}
+      >
+        Send Money
+      </NavLink>
     </>
   );
 }

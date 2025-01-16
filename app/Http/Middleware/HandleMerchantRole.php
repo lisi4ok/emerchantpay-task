@@ -12,10 +12,10 @@ class HandleMerchantRole
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::guest() || Auth::user()->role != RoleEnum::USER->value || Auth::user()->role != RoleEnum::MERCHANT->value) {
-            abort(403);
+        if (Auth::user()->role == RoleEnum::USER->value || Auth::user()->role == RoleEnum::MERCHANT->value) {
+            return $next($request);
         }
 
-        return $next($request);
+        abort(403);
     }
 }

@@ -45,6 +45,10 @@ class User extends Authenticatable implements ImageInterface // MustVerifyEmail,
         'password',
         'description',
         'amount',
+        'role',
+        'status',
+        'email_verified_at',
+        'remember_token',
     ];
 
 //    protected $appends = [

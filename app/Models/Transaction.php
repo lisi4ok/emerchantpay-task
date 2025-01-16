@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Auth;
 
-class Trasaction extends Model
+class Transaction extends Model
 {
     /** @use HasFactory<\Database\Factories\OrderFactory> */
     use HasFactory;
@@ -18,7 +18,7 @@ class Trasaction extends Model
      *
      * @var string
      */
-    protected $table = 'trasactions';
+    protected $table = 'transactions';
 
     /**
      * The attributes that are mass assignable.
@@ -26,8 +26,9 @@ class Trasaction extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'title',
+        'user_id',
         'type',
+        'title',
         'amount',
         'description',
         'created_by',
@@ -38,17 +39,15 @@ class Trasaction extends Model
     {
         parent::boot();
 
-        if (!Auth::user()) {
-            return;
+        if (Auth::user()) {
+            static::updating(function($table) {
+                $table->updated_by = Auth::user()->id;
+            });
+
+            static::saving(function($table) {
+                $table->created_by = Auth::user()->id;
+            });
         }
-
-        static::updating(function($table) {
-            $table->updated_by = Auth::user()->id;
-        });
-
-        static::saving(function($table) {
-            $table->created_by = Auth::user()->id;
-        });
     }
 
     /**

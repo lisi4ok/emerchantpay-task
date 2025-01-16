@@ -1,10 +1,10 @@
-import Pagination from "@/Components/Pagination";
-import TextInput from "@/Components/TextInput";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import TableHeading from "@/Components/TableHeading";
+import Pagination from "@/Components/Pagination.jsx";
+import TextInput from "@/Components/TextInput.jsx";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.jsx";
+import TableHeading from "@/Components/TableHeading.jsx";
 import { Head, Link, router } from "@inertiajs/react";
 
-export default function Index({ auth, users, queryParams = null, success }) {
+export default function Index({ auth, transactions, queryParams = null, success }) {
   queryParams = queryParams || {};
   const searchFieldChanged = (name, value) => {
     if (value) {
@@ -13,7 +13,7 @@ export default function Index({ auth, users, queryParams = null, success }) {
       delete queryParams[name];
     }
 
-    router.get(route("admin.users.index"), queryParams);
+    router.get(route("merchant.transactions.index"), queryParams);
   };
 
   const onKeyPress = (name, e) => {
@@ -33,15 +33,10 @@ export default function Index({ auth, users, queryParams = null, success }) {
       queryParams.sort_field = name;
       queryParams.sort_direction = "asc";
     }
-    router.get(route("admin.users.index"), queryParams);
+    router.get(route("users.index"), queryParams);
   };
 
-  const deleteUser = (user) => {
-    if (!window.confirm("Are you sure you want to delete the user?")) {
-      return;
-    }
-    router.delete(route("admin.users.destroy", user.id));
-  };
+  console.log(transactions)
 
   return (
     <AuthenticatedLayout
@@ -49,10 +44,10 @@ export default function Index({ auth, users, queryParams = null, success }) {
       header={
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Users
+            Transactions
           </h2>
           <Link
-            href={route("admin.users.create")}
+            href={route("merchant.transactions.create")}
             className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600"
           >
             Create new
@@ -60,7 +55,7 @@ export default function Index({ auth, users, queryParams = null, success }) {
         </div>
       }
     >
-      <Head title="Users" />
+      <Head title="Transactions" />
 
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -84,7 +79,7 @@ export default function Index({ auth, users, queryParams = null, success }) {
                         ID
                       </TableHeading>
                       <TableHeading
-                        name="name"
+                        name="title"
                         sort_field={queryParams.sort_field}
                         sort_direction={queryParams.sort_direction}
                         sortChanged={sortChanged}
@@ -93,22 +88,22 @@ export default function Index({ auth, users, queryParams = null, success }) {
                       </TableHeading>
 
                       <TableHeading
-                        name="email"
+                        name="type"
                         sort_field={queryParams.sort_field}
                         sort_direction={queryParams.sort_direction}
                         sortChanged={sortChanged}
                       >
-                        Email
+                        Type
                       </TableHeading>
 
-                      <TableHeading
-                          name="amount"
-                          sort_field={queryParams.sort_field}
-                          sort_direction={queryParams.sort_direction}
-                          sortChanged={sortChanged}
-                      >
-                          Amount
-                      </TableHeading>
+                        <TableHeading
+                            name="amount"
+                            sort_field={queryParams.sort_field}
+                            sort_direction={queryParams.sort_direction}
+                            sortChanged={sortChanged}
+                        >
+                            Amount
+                        </TableHeading>
 
                       <TableHeading
                         name="created_at"
@@ -128,71 +123,58 @@ export default function Index({ auth, users, queryParams = null, success }) {
                       <th className="px-3 py-3">
                         <TextInput
                           className="w-full"
-                          defaultValue={queryParams.name}
-                          placeholder="User Name"
+                          defaultValue={queryParams.title}
+                          placeholder="Transaction Title"
                           onBlur={(e) =>
-                            searchFieldChanged("name", e.target.value)
+                            searchFieldChanged("title", e.target.value)
                           }
-                          onKeyPress={(e) => onKeyPress("name", e)}
+                          onKeyPress={(e) => onKeyPress("title", e)}
                         />
                       </th>
                       <th className="px-3 py-3">
                         <TextInput
                           className="w-full"
-                          defaultValue={queryParams.email}
-                          placeholder="User Email"
+                          defaultValue={queryParams.type}
+                          placeholder="Type"
                           onBlur={(e) =>
-                            searchFieldChanged("email", e.target.value)
+                            searchFieldChanged("type", e.target.value)
                           }
-                          onKeyPress={(e) => onKeyPress("email", e)}
+                          onKeyPress={(e) => onKeyPress("Type", e)}
                         />
                       </th>
-                      <th className="px-3 py-3"></th>
                       <th className="px-3 py-3"></th>
                       <th className="px-3 py-3"></th>
                     </tr>
                   </thead>
                   <tbody>
-                    {users.data.map((user) => (
+                    {transactions.data.map((transaction) => (
                       <tr
                         className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                        key={user.id}
+                        key={transaction.id}
                       >
-                        <td className="px-3 py-2">{user.id}</td>
+                        <td className="px-3 py-2">{transaction.id}</td>
                         <th className="px-3 py-2 text-nowrap">
-                          {user.name}
+                          {transaction.title}
                         </th>
-                        <td className="px-3 py-2">{user.email}</td>
-                        <td className="px-3 py-2">{user.amount}</td>
+                        <td className="px-3 py-2">{transaction.type}</td>
+                        <td className="px-3 py-2">{transaction.amount}</td>
                         <td className="px-3 py-2 text-nowrap">
-                          {user.created_at}
+                          {transaction.created_at}
                         </td>
                         <td className="px-3 py-2 text-nowrap">
                           <Link
-                            href={route("admin.users.show", user.id)}
+                            href={route("merchant.transactions.show", transaction.id)}
                             className="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1"
                           >
                             View
                           </Link>
-                          <Link
-                            href={route("admin.users.edit", user.id)}
-                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1"
-                          >
-                            Edit
-                          </Link>
-                          <button
-                            onClick={(e) => deleteUser(user)}
-                            className="font-medium text-red-600 dark:text-red-500 hover:underline mx-1"
-                          >
-                            Delete
-                          </button>
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-              <Pagination links={users.meta.links} />
+              <Pagination links={transactions.meta.links} />
             </div>
           </div>
         </div>
