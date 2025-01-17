@@ -33,7 +33,7 @@ export default function Index({ auth, transactions, queryParams = null, success 
       queryParams.sort_field = name;
       queryParams.sort_direction = "asc";
     }
-    router.get(route("users.index"), queryParams);
+    router.get(route("merchant.transactions.index"), queryParams);
   };
 
   console.log(transactions)

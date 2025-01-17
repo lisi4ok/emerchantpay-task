@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users');
             $table->unsignedTinyInteger('type');
-            $table->decimal('amount');
+            $table->decimal('amount')->unsigned();
             $table->text('description')->nullable()->default(null);
             $table->foreignId('created_by')->nullable()->constrained('users');
             $table->timestamps();

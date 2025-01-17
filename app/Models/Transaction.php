@@ -31,7 +31,6 @@ class Transaction extends Model
         'amount',
         'description',
         'created_by',
-        'updated_by',
     ];
 
     protected static function boot()
@@ -39,9 +38,9 @@ class Transaction extends Model
         parent::boot();
 
         if (Auth::user()) {
-            static::updating(function($table) {
-                $table->updated_by = Auth::user()->id;
-            });
+//            static::updating(function($table) {
+//                $table->updated_by = Auth::user()->id;
+//            });
 
             static::saving(function($table) {
                 $table->created_by = Auth::user()->id;
@@ -58,6 +57,7 @@ class Transaction extends Model
     {
         return [
             'type' => TransactionTypeEnum::class,
+            'amount' => 'decimal:2',
             'created_at' => 'datetime:Y-m-d H:i:s',
             'updated_at' => 'datetime:Y-m-d H:i:s',
         ];
@@ -71,10 +71,5 @@ class Transaction extends Model
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by', 'id', 'users');
-    }
-
-    public function updatedBy(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'updated_by', 'id', 'users');
     }
 }

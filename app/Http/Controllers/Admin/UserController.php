@@ -20,7 +20,6 @@ class UserController extends Controller
         return Inertia::render('Admin/Users/Index', [
             'users' => UserResource::collection($users),
             'queryParams' => request()->query() ?: null,
-            'success' => session('success'),
         ]);
     }
 

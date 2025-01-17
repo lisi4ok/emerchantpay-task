@@ -23,7 +23,9 @@ class WalletController extends Controller
 
     public function addMoney()
     {
-        return Inertia::render('Merchant/AddMoney');
+        return Inertia::render('Merchant/AddMoney', [
+            'amount' => (new UserResource(Auth::user()))->amount,
+        ]);
     }
 
     public function storeMoney(AddMoneyRequest $request)
@@ -31,13 +33,15 @@ class WalletController extends Controller
         try {
             $this->walletService->addMoney(
                 (float) $request->validated('amount'),
-                $request->validated('title')
+                (int) Auth::user()->id,
+                $request->validated('title'),
+                $request->validated('description'),
             );
-
         } catch (\Throwable $exception) {
-            return redirect()->back()->with('error', $exception->getMessage());
+            return back()->with('error', $exception->getMessage());
         }
-        return redirect()->route('dashboard')->with('success', 'Successfully added Money');
+
+        return redirect()->route('dashboard')->with('success', 'Money added');
     }
 
 
@@ -49,7 +53,7 @@ class WalletController extends Controller
 
         return Inertia::render('Merchant/SendMoney', [
             'users' => UserResource::collection($users),
-            'amount' => Auth::user()->amount,
+            'amount' => (new UserResource(Auth::user()))->amount,
         ]);
     }
 
@@ -64,6 +68,6 @@ class WalletController extends Controller
         } catch (\Throwable $exception) {
             return redirect()->back()->with('error', $exception->getMessage());
         }
-        return redirect()->route('dashboard')->with('success', 'Successfully added Money');
+        return redirect()->route('dashboard')->with('success', 'Money transferred');
     }
 }

@@ -41,6 +41,7 @@ class Order extends Model
     {
         return [
             'status' => OrderStatusEnum::class,
+            'amount' => 'decimal:2',
             'created_at' => 'datetime:Y-m-d H:i:s',
             'updated_at' => 'datetime:Y-m-d H:i:s',
         ];

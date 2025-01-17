@@ -12,12 +12,18 @@ use Illuminate\Support\Facades\DB;
 
 class WalletService implements WalletServiceInterface
 {
-    public function addMoney(float $amount, string $title, ?string $description = null): bool
+    public function addMoney(float $amount, int $userId, string $title, ?string $description = null): bool
     {
         try {
-            DB::transaction(function () use ($amount, $title, $description) {
+            DB::transaction(function () use ($amount, $userId, $title, $description) {
                 $status = OrderStatusEnum::PENDING->value;
-                Order::create(compact('amount', 'title', 'description', 'status'));
+                Order::create([
+                    'amount' => $amount,
+                    'user_id' => $userId,
+                    'status' => $status,
+                    'title' => $title,
+                    'description' => $description,
+                ]);
             });
         } catch (\Throwable $exception) {
             throw new $exception;

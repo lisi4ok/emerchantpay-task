@@ -13,7 +13,7 @@ Route::middleware('auth')->group(function () {
     ], function () {
         Route::resource('transactions', TransactionsController::class);
         Route::get('money/add', [WalletController::class, 'addMoney'])->name('money.add');
-        Route::post('money/add', [WalletController::class, 'storeMoney'])->name('money.store');
+        Route::post('money/store', [WalletController::class, 'storeMoney'])->name('money.store');
         Route::get('money/send', [WalletController::class, 'sendMoney'])->name('money.send');
         Route::post('money/transfer', [WalletController::class, 'transferMoney'])->name('money.transfer');
     });

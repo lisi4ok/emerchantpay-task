@@ -7,13 +7,14 @@ import { Head, Link, useForm } from "@inertiajs/react";
 import TextAreaInput from "@/Components/TextAreaInput";
 import Checkbox from "@/Components/Checkbox";
 
-export default function SendMoney({ auth, error }) {
+export default function SendMoney({ auth, amount, error }) {
   const { data, setData, post, errors, reset } = useForm({
     title: "",
     amount: "",
     description: "",
     type: "",
   });
+  console.log(error);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -36,9 +37,21 @@ export default function SendMoney({ auth, error }) {
               onSubmit={onSubmit}
               className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg"
             >
+              <section className="max-w-xl">
+                <header>
+                  <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                    Amount
+                  </h2>
+
+                  <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                    Your amount is: <strong>{amount}</strong>
+                  </p>
+                </header>
+              </section>
+
 
               <div className="mt-4">
-                <InputLabel htmlFor="title" value="Title" className="reqired" />
+                <InputLabel htmlFor="title" value="Title" className="reqired"/>
 
                 <TextInput
                   id="title"
@@ -54,7 +67,7 @@ export default function SendMoney({ auth, error }) {
               </div>
 
               <div className="mt-4">
-                <InputLabel htmlFor="type" value="Type" />
+                <InputLabel htmlFor="type" value="Type"/>
 
                 <SelectInput
                   name="type"

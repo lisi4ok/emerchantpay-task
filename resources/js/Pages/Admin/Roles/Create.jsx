@@ -5,7 +5,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
 import Checkbox from "@/Components/Checkbox";
 
-export default function Create({ auth, permissions, error }) {
+export default function Create({ auth, permissions }) {
   const { data, setData, post, errors, reset } = useForm({
     name: "",
     permissions: [],
@@ -33,11 +33,6 @@ export default function Create({ auth, permissions, error }) {
 
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-          {error && (
-            <div className="bg-rose-500 py-2 px-4 text-white rounded mb-4">
-              {error}
-            </div>
-          )}
           <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
             <form
               onSubmit={onSubmit}

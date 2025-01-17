@@ -19,7 +19,8 @@ class OrderResource extends JsonResource
             "id" => $this->id,
             "title" => $this->title,
             "type" => $this->type,
-            "amount" => number_format($this->amount, 2, '.', ''),
+            "amount" => (new \NumberFormatter(config('app.locale'), \NumberFormatter::CURRENCY))
+                ->formatCurrency($this->amount, config('app.currency')),
             "description" => $this->description,
             "created_by" => $this->createdBy,
             "updated_by" => $this->updatedBy,

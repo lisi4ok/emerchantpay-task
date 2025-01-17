@@ -6,6 +6,7 @@ import AdminNav from '@/Partials/AdminNav';
 import MerchantNav from '@/Partials/MerchantNav';
 import AdminResponsiveNav from '@/Partials/AdminResponsiveNav';
 import MerchantResponsiveNav from '@/Partials/MerchantResponsiveNav';
+import Messages from "@/Partials/Messages";
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -175,6 +176,8 @@ export default function AuthenticatedLayout({ header, children }) {
                     </div>
                 </header>
             )}
+
+            <Messages />
 
             <main>{children}</main>
         </div>

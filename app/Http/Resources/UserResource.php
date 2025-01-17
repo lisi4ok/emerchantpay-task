@@ -19,7 +19,8 @@ class UserResource extends JsonResource
             "id" => $this->id,
             "name" => $this->name,
             "email" => $this->email,
-            "amount" => number_format($this->amount, 2, '.', ''),
+            "amount" => (new \NumberFormatter(config('app.locale'), \NumberFormatter::CURRENCY))
+                ->formatCurrency($this->amount, config('app.currency')),
             "status" => $this->status,
             "description" => $this->description,
             "created_by" => $this->createdBy,

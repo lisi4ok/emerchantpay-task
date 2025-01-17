@@ -96,6 +96,7 @@ class User extends Authenticatable implements ImageInterface // MustVerifyEmail,
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'status' => UserStatusEnum::class,
+            'amount' => 'decimal:2',
             'created_at' => 'datetime:Y-m-d H:i:s',
             'updated_at' => 'datetime:Y-m-d H:i:s',
         ];

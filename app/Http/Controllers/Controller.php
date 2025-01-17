@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 abstract class Controller
 {
-    protected function filter($model, array $fields = [], array $fieldsLike = [], array $where = [])
+    protected function filter($model, array $fields = [], array $fieldsLike = [], array $where = [], array $with = [])
     {
         $query = $model::query();
 
@@ -26,6 +26,9 @@ abstract class Controller
 
         if (!empty($where)) {
             $query = $query->where($where);
+        }
+        if (!empty($with)) {
+            $query = $query->with($with);
         }
 
         $sortField = request('sort_field', 'created_at');

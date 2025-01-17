@@ -20,7 +20,6 @@ class RolesController extends Controller
         return Inertia::render('Admin/Roles/Index', [
             'roles' => RoleResource::collection($roles),
             'queryParams' => request()->query() ?: null,
-            'success' => session('success'),
         ]);
     }
 

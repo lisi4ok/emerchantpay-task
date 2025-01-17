@@ -4,21 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Admin\StoreTransactionRequest;
 use App\Http\Requests\Admin\UpdateTransactionRequest;
+use App\Http\Resources\TransactionResource;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class TransactionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $transactions = $this->filter(
+            model: Transaction::class,
+            where: ['user_id' => Auth::user()],
+            with: ['user', 'createdBy']
+        );
+
+        return Inertia::render('Merchant/Transactions/Index', [
+            'transactions' => TransactionResource::collection($transactions),
+            'queryParams' => request()->query() ?: null,
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //

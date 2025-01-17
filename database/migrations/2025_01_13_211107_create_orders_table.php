@@ -15,9 +15,9 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->string('title');
-            $table->decimal('amount');
             $table->unsignedTinyInteger('status')->default(OrderStatusEnum::PENDING->value);
+            $table->decimal('amount')->unsigned();
+            $table->string('title');
             $table->text('description')->nullable()->default(null);
             $table->timestamps();
         });

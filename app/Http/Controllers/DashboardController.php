@@ -12,6 +12,7 @@ class DashboardController extends Controller
     {
         return Inertia::render('Dashboard', [
             'role' => array_flip(RoleEnum::array())[Auth::user()->role],
+            'amount' => Auth::user()->amount,
         ]);
     }
 }
