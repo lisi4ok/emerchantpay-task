@@ -34,6 +34,7 @@ jobs:
           php artisan key:generate
           php artisan migrate
           php artisan db:seed
+          bun install
           bun run build
 
       - name: Run tests
