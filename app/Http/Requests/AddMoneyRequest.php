@@ -1,10 +1,14 @@
 <?php
 
-namespace App\Http\Requests\Admin;
+namespace App\Http\Requests;
 
+use App\Enums\UserStatusEnum;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
-class UpdateRoleRequest extends FormRequest
+class AddMoneyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +26,9 @@ class UpdateRoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'permissions' => ['nullable', 'array'],
-            'permissions.*' => ['required_with:permissions', 'numeric'],
+            'title' => ['required', 'string', 'max:255'],
+            'amount' => ['required', 'numeric'],
+            'description' => ['nullable', 'string'],
         ];
     }
 }

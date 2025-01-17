@@ -2,13 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\UserStatusEnum;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Password;
 
-class AddMoneyRequest extends FormRequest
+class TransferMoneyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,8 +22,8 @@ class AddMoneyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'string', 'max:255'],
-            'amount' => ['nullable', 'numeric'],
+            'user_id' => ['required', 'numeric', 'exists:users,id'],
+            'amount' => ['required', 'numeric', 'gt: 0', 'lte:' . $this->user()->amount],
             'description' => ['nullable', 'string'],
         ];
     }

@@ -4,7 +4,7 @@ import DeleteUserForm from './Partials/DeleteUserForm';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm';
 
-export default function Edit({ mustVerifyEmail, status, role }) {
+export default function Edit({ mustVerifyEmail, status }) {
     return (
         <AuthenticatedLayout
             header={
@@ -17,9 +17,6 @@ export default function Edit({ mustVerifyEmail, status, role }) {
 
             <div className="py-12">
               <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">
-                  Role: {role}
-                </div>
                 <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">
                   <UpdateProfileInformationForm
                     mustVerifyEmail={mustVerifyEmail}

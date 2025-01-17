@@ -10,7 +10,7 @@ use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
-class WalletService implements WalletServiceInterface
+class TransactionService //implements WalletServiceInterface
 {
     public function addMoney(float $amount, string $title, ?string $description = null): bool
     {
@@ -24,16 +24,13 @@ class WalletService implements WalletServiceInterface
         }
 
         return true;
+
     }
 
     public function transferMoney(float $amount, User $from, User $to): bool
     {
         try {
             DB::transaction(function () use ($amount, $from, $to) {
-                if ($from->amount < $amount) {
-                    throw new \Exception('Not enough money');
-                }
-
                 Transaction::create([
                     'amount' => $amount,
                     'type' => TransactionTypeEnum::CREDIT->value,
@@ -49,8 +46,12 @@ class WalletService implements WalletServiceInterface
                     'description' => 'Transferred fund to ' . $to->email,
                 ]);
 
-                $from->update(['amount' => $from->amount - $amount]);
-                $to->update(['amount' => $to->amount + $amount]);
+                $from->update([
+                   'amount' => $from->amount - $amount,
+                ]);
+                $to->update([
+                    'amount' => $from->amount + $amount,
+                ]);
 
             });
         } catch (\Throwable $exception) {

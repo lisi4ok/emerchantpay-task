@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreUserRequest;
-use App\Http\Requests\UpdateUserRequest;
+use App\Http\Requests\Admin\StoreUserRequest;
+use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\Role;
 use App\Models\User;
@@ -39,7 +39,7 @@ class UserController extends Controller
                 $user->roles()->sync($request->get('roles'));
             });
         } catch (\Throwable $exception) {
-            return redirect()->back()->withErrors(['error' => $exception->getMessage()]);
+            return redirect()->back()->with('error', $exception->getMessage());
         }
 
         return redirect()->route('admin.users.index')->with('success', 'User created');
@@ -82,7 +82,7 @@ class UserController extends Controller
                 $user->roles()->sync($request->get('roles'));
             });
         } catch (\Throwable $exception) {
-            return redirect()->back()->withErrors(['error' => $exception->getMessage()]);
+            return redirect()->back()->with('error', $exception->getMessage());
         }
 
         return redirect()->route('admin.users.index')->with('success', 'User updated');

@@ -5,6 +5,6 @@ use App\Models\User;
 
 interface WalletServiceInterface
 {
-    public function addMoney(User $user, float $amount);
-    public function transferMoney(User $user, float $amount);
+    public function addMoney(float $amount, string $title, ?string $description = null): bool;
+    public function transferMoney(float $amount, User $from, User $to): bool;
 }

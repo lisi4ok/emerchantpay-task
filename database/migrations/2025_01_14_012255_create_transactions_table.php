@@ -14,12 +14,10 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->string('title');
             $table->unsignedTinyInteger('type');
             $table->decimal('amount');
             $table->text('description')->nullable()->default(null);
             $table->foreignId('created_by')->nullable()->constrained('users');
-            $table->foreignId('updated_by')->nullable()->constrained('users');
             $table->timestamps();
         });
     }

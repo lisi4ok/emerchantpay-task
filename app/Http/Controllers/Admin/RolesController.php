@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreRoleRequest;
-use App\Http\Requests\UpdateRoleRequest;
+use App\Http\Requests\Admin\StoreRoleRequest;
+use App\Http\Requests\Admin\UpdateRoleRequest;
 use App\Http\Resources\RoleResource;
 use App\Models\Permission;
 use App\Models\Role;
@@ -39,7 +39,7 @@ class RolesController extends Controller
                 $role->permissions()->sync($request->get('permissions'));
             });
         } catch (\Throwable $exception) {
-            return redirect()->back()->withErrors(['error' => $exception->getMessage()]);
+            return redirect()->back()->with('error', $exception->getMessage());
         }
 
         return redirect()->route('admin.roles.index')->with('success', 'Role created');
@@ -76,7 +76,7 @@ class RolesController extends Controller
                 $role->permissions()->sync($request->get('permissions'));
             });
         } catch (\Throwable $exception) {
-            return redirect()->back()->withErrors(['error' => $exception->getMessage()]);
+            return redirect()->back()->with('error', $exception->getMessage());
         }
 
         return redirect()->route('admin.roles.index')->with('success', 'Role updated');

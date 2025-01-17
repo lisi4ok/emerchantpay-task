@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Admin\StoreTransactionRequest;
+use App\Http\Requests\Admin\UpdateTransactionRequest;
 use App\Models\Transaction;
-use App\Http\Requests\StoreTransactionRequest;
-use App\Http\Requests\UpdateTransactionRequest;
 
 class TransactionController extends Controller
 {

@@ -15,8 +15,8 @@ export default function MerchantResponsiveNav({}) {
         Add Money
       </ResponsiveNavLink>
       <ResponsiveNavLink
-        href={route('merchant.money.transfer')}
-        active={route().current('merchant.money.transfer')}
+        href={route('merchant.money.send')}
+        active={route().current('merchant.money.send')}
       >
         Send Money
       </ResponsiveNavLink>
