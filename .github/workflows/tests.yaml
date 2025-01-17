@@ -17,11 +17,12 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.versions }}
-          extensions: dom, curl, libxml, fileinfo, mbstring, zip, pcntl, pdo, sqlite, pgsql, mysqli pdo_sqlite, pdo_mysql, pdo_pgsql, bcmath, soap, intl, gd, exif, iconv
+
+          extensions: dom, curl, libxml, openssl, bcmath, json, xml, tokenizer, ctype, fileinfo, mbstring, zip, pcntl, pdo, sqlite3, pgsql, mysqli pdo_sqlite, pdo_mysql, pdo_pgsql, bcmath, soap, intl, gd, exif, iconv
           coverage: none
 
       - name: Run composer install
-        run: composer install -n --prefer-dist
+        run: composer install -n --no-dev --no-interaction --prefer-dist
 
       - name: Install Bun
         uses: oven-sh/setup-bun@v2
