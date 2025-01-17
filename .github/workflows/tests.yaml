@@ -6,22 +6,19 @@ jobs:
   tests:
     strategy:
       matrix:
-        operating-system: [ ubuntu-latest, windows-latest, macOS-latest ]
-        php-versions: [ '8.2', '8.3', '8.4' ]
-    name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
-    runs-on: ${{ matrix.operating-system }}
+        os: [ ubuntu-latest, windows-latest, macOS-latest ]
+        versions: [ '8.2', '8.3', '8.4' ]
+    name: PHP ${{ matrix.versions }} Test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-versions }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pgsql, mysqli, pdo_sqlite, pdo_mysql, pdo_pgsql, bcmath, soap, intl, gd, exif, iconv
+          php-version: ${{ matrix.versions }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pgsql, mysqli pdo_sqlite, pdo_mysql, pdo_pgsql, bcmath, soap, intl, gd, exif, iconv
           coverage: none
-
-      - name: Check PHP Version
-        run: php -v
 
       - name: Run composer install
         run: composer install -n --prefer-dist
