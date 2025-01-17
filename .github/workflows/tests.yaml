@@ -23,12 +23,18 @@ jobs:
       - name: Run composer install
         run: composer install -n --prefer-dist
 
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+            bun-version: latest
+
       - name: Prepare Laravel Application
         run: |
           cp .env.example .env
           php artisan key:generate
           php artisan migrate
           php artisan db:seed
+          bun run build
 
       - name: Run tests
         run: php artisan test
