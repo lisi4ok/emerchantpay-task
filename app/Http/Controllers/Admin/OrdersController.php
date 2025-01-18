@@ -54,11 +54,4 @@ class OrdersController extends Controller
 
         return redirect()->route('admin.orders.index')->with('success', 'Order updated');
     }
-
-    public function destroy($id)
-    {
-        Order::findOrFail($id)->delete();
-
-        return redirect()->route('admin.orders.index')->with('success', 'User deleted');
-    }
 }

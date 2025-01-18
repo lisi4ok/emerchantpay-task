@@ -17,11 +17,6 @@ class TransactionObserver
 
     public function creating(Transaction $transaction)
     {
-        echo '<pre>';
-        var_dump($transaction->type === TransactionTypeEnum::DEBIT->value);
-        var_dump($transaction->type);
-        exit;
-
         if ($transaction->type === TransactionTypeEnum::CREDIT->value) {
             $transaction->user()->update([
                 'amount' => $transaction->user->amount + $transaction->amount,

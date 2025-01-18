@@ -12,9 +12,10 @@ class OrderObserver
     public function updating(Order $order): void
     {
         $type = null;
+
         if ($order->status == OrderStatusEnum::COMPLETED->value) {
             $type = TransactionTypeEnum::CREDIT->value;
-        } elseif ($order->status == OrderStatusEnum::REFUNDED)  {
+        } elseif ($order->status == OrderStatusEnum::REFUNDED->value)  {
             if ($order->amount > $order->user->amount) {
                 throw new \Exception('User: not enough fund');
             }
