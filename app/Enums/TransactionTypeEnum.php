@@ -10,6 +10,6 @@ enum TransactionTypeEnum: int
 {
     use ArrayableEnumeration;
 
-    case CREDIT = 0;
-    case DEBIT = 1;
+    case DEBIT = 0;
+    case CREDIT = 1;
 }

@@ -11,7 +11,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
-class UserController extends Controller
+class UsersController extends Controller
 {
     public function index()
     {

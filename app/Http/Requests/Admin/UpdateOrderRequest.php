@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
-use App\Enums\MoneyTypeEnum;
+use App\Enums\OrderStatusEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -13,7 +13,7 @@ class UpdateOrderRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true ;
     }
 
     /**
@@ -25,7 +25,7 @@ class UpdateOrderRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string', 'max:255'],
-            'type' => ['nullable', Rule::enum(MoneyTypeEnum::class)],
+            'status' => [Rule::enum(OrderStatusEnum::class)],
             'user_id' => ['required', 'exists:users,id'],
             'amount' => ['required', 'numeric'],
             'description' => ['nullable', 'string'],

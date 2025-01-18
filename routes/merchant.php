@@ -11,7 +11,7 @@ Route::middleware('auth')->group(function () {
         'prefix' => 'merchant',
         'as' => 'merchant.',
     ], function () {
-        Route::resource('transactions', TransactionsController::class);
+        Route::get('transactions', TransactionsController::class)->name('transactions');
         Route::get('money/add', [WalletController::class, 'addMoney'])->name('money.add');
         Route::post('money/store', [WalletController::class, 'storeMoney'])->name('money.store');
         Route::get('money/send', [WalletController::class, 'sendMoney'])->name('money.send');

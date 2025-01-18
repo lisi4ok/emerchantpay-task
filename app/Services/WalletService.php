@@ -16,7 +16,6 @@ class WalletService implements WalletServiceInterface
     {
         try {
             DB::transaction(function () use ($amount, $userId, $title, $description) {
-                $status = OrderStatusEnum::PENDING->value;
                 Order::create([
                     'amount' => $amount,
                     'user_id' => $userId,

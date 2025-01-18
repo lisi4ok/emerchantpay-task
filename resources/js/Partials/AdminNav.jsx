@@ -14,6 +14,18 @@ export default function AdminNav({}) {
       >
         Roles
       </NavLink>
+      <NavLink
+        href={route('admin.orders.index')}
+        active={route().current('admin.orders.index')}
+      >
+        Orders
+      </NavLink>
+      <NavLink
+        href={route('admin.transactions.index')}
+        active={route().current('admin.transactions.index')}
+      >
+        Transactions
+      </NavLink>
     </>
   );
 }

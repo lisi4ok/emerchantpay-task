@@ -17,5 +17,7 @@ class DatabaseSeeder extends BaseSeeder
         $this->call(PermissionSeeder::class);
         $this->call(CreateFirstUser::class);
         $this->call(AssignAdminPermission::class);
+        //$this->call(UserSeeder::class);
+
     }
 }

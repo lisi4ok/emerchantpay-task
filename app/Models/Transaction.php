@@ -56,7 +56,7 @@ class Transaction extends Model
     protected function casts(): array
     {
         return [
-            'type' => TransactionTypeEnum::class,
+            //'type' => TransactionTypeEnum::class,
             'amount' => 'decimal:2',
             'created_at' => 'datetime:Y-m-d H:i:s',
             'updated_at' => 'datetime:Y-m-d H:i:s',

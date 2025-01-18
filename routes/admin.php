@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\RolesController;
-use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\TransactionsController;
 use App\Http\Controllers\Admin\OrdersController;
 use App\Http\Middleware\HandleAdminRole;
@@ -13,7 +13,7 @@ Route::middleware('auth')->group(function () {
         'prefix' => 'admin',
         'as' => 'admin.',
     ], function () {
-        Route::resource('users', UserController::class);
+        Route::resource('users', UsersController::class);
         Route::resource('roles', RolesController::class);
         Route::resource('transactions', TransactionsController::class);
         Route::resource('orders', OrdersController::class);

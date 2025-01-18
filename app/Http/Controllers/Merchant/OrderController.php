@@ -1,28 +1,97 @@
 <?php
 
-namespace App\Http\Controllers\Merchant;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\TransactionResource;
-use App\Models\Transaction;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Admin\StoreOrderRequest;
+use App\Http\Requests\Admin\UpdateOrderRequest;
+use App\Http\Resources\UserResource;
+use App\Models\Order;
+use App\Models\Role;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class OrderController extends Controller
 {
+    public function index()
+    {
+        $orders = $this->filter(Order::class, [], ['name', 'email']);
+
+        return Inertia::render('Admin/Orders/Index', [
+            'orders' => UserResource::collection($orders),
+            'queryParams' => request()->query() ?: null,
+        ]);
+    }
+
     public function create()
     {
-        $transactions = $this->filter(
-            Transaction::class,
-            [],
-            ['name', 'type', 'amount'],
-            ['user_id' => Auth::user()->id],
-        );
-
-        return Inertia::render('Merchant/Transactions/Index', [
-            'transactions' => TransactionResource::collection($transactions),
-            'queryParams' => request()->query() ?: null,
-            'success' => session('success'),
+        return Inertia::render('Admin/Users/Create', [
+            'roles' => Role::all(),
         ]);
+    }
+
+    public function store(StoreOrderRequest $request)
+    {
+        try {
+            DB::transaction(function () use ($request) {
+                $user = User::create($request->validated());
+                $user->roles()->sync($request->get('roles'));
+            });
+        } catch (\Throwable $exception) {
+            return redirect()->back()->with('error', $exception->getMessage());
+        }
+
+        return redirect()->route('admin.users.index')->with('success', 'User created');
+    }
+
+    public function show(int $id)
+    {
+        $user = User::with('roles')->findOrFail($id);
+
+        return Inertia::render('Admin/Users/Show', [
+            'user' => $user,
+            'userRoles' => $user->roles->pluck('id'),
+            'roles' => Role::all(),
+        ]);
+    }
+
+    public function edit(int $id)
+    {
+        $user = User::with('roles')->findOrFail($id);
+
+        return Inertia::render('Admin/Users/Edit', [
+            'user' => $user,
+            'userRoles' => $user->roles->pluck('id'),
+            'roles' => Role::all(),
+        ]);
+    }
+
+    public function update(UpdateOrderRequest $request, int $id)
+    {
+        $user = User::with('roles')->findOrFail($id);
+
+        try {
+            DB::transaction(function () use ($user, $request) {
+                $data = $request->validated();
+                $password = $data['password'] ?? null;
+                if (!$password) {
+                    unset($data['password']);
+                }
+                $user->update($data);
+                $user->roles()->sync($request->get('roles'));
+            });
+        } catch (\Throwable $exception) {
+            return redirect()->back()->with('error', $exception->getMessage());
+        }
+
+        return redirect()->route('admin.users.index')->with('success', 'User updated');
+    }
+
+    public function destroy($id)
+    {
+        User::findOrFail($id)->delete();
+
+        return redirect()->route('admin.users.index')->with('success', 'User deleted');
     }
 }

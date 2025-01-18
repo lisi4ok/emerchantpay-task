@@ -7,8 +7,8 @@ import { Head, Link, useForm } from "@inertiajs/react";
 
 export default function Create({ auth, role, permissions, rolePermissions }) {
   const { data, setData, post, errors, reset } = useForm({
-    name: role.name || "",
-    permissions: rolePermissions || [],
+    name: role.name,
+    permissions: rolePermissions,
     _method: "PUT",
   });
 

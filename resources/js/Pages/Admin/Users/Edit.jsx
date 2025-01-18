@@ -9,14 +9,14 @@ import { Head, Link, useForm } from "@inertiajs/react";
 
 export default function Create({ auth, user, roles, userRoles }) {
   const { data, setData, post, errors, reset } = useForm({
-    name: user.name || "",
-    email: user.email || "",
-    amount: user.amount || "",
-    description: user.description || "",
+    name: user.name,
+    email: user.email,
+    amount: user.amount,
+    description: user.description,
     password: "",
     password_confirmation: "",
-    roles: userRoles || [],
-    role: user.role || "",
+    roles: userRoles,
+    role: user.role,
     _method: "PUT",
   });
 

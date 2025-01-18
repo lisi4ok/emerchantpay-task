@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use NumberFormatter;
 
 class UserResource extends JsonResource
 {
@@ -19,7 +20,7 @@ class UserResource extends JsonResource
             "id" => $this->id,
             "name" => $this->name,
             "email" => $this->email,
-            "amount" => (new \NumberFormatter(config('app.locale'), \NumberFormatter::CURRENCY))
+            "amount" => (new NumberFormatter(config('app.locale'), NumberFormatter::CURRENCY))
                 ->formatCurrency($this->amount, config('app.currency')),
             "status" => $this->status,
             "description" => $this->description,

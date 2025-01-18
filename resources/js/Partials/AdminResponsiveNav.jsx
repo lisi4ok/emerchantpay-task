@@ -14,6 +14,18 @@ export default function AdminResponsiveNav({}) {
       >
         Roles
       </ResponsiveNavLink>
+      <ResponsiveNavLink
+        href={route('admin.orders.index')}
+        active={route().current('admin.orders.index')}
+      >
+        Orders
+      </ResponsiveNavLink>
+      <ResponsiveNavLink
+        href={route('admin.transactions.index')}
+        active={route().current('admin.transactions.index')}
+      >
+        Transactions
+      </ResponsiveNavLink>
     </>
   );
 }

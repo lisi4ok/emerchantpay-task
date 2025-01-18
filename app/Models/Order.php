@@ -26,9 +26,9 @@ class Order extends Model
      */
     protected $fillable = [
         'user_id',
-        'title',
         'amount',
         'status',
+        'title',
         'description',
     ];
 
@@ -40,7 +40,7 @@ class Order extends Model
     protected function casts(): array
     {
         return [
-            'status' => OrderStatusEnum::class,
+            //'status' => OrderStatusEnum::class,
             'amount' => 'decimal:2',
             'created_at' => 'datetime:Y-m-d H:i:s',
             'updated_at' => 'datetime:Y-m-d H:i:s',
