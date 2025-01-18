@@ -21,8 +21,8 @@ export default function AdminNav({}) {
         Orders
       </NavLink>
       <NavLink
-        href={route('admin.transactions.index')}
-        active={route().current('admin.transactions.index')}
+        href={route('admin.transactions')}
+        active={route().current('admin.transactions')}
       >
         Transactions
       </NavLink>

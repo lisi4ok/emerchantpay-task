@@ -24,11 +24,7 @@ class UpdateOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'string', 'max:255'],
             'status' => [Rule::enum(OrderStatusEnum::class)],
-            'user_id' => ['required', 'exists:users,id'],
-            'amount' => ['required', 'numeric'],
-            'description' => ['nullable', 'string'],
         ];
     }
 }

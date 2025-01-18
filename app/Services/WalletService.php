@@ -16,6 +16,7 @@ class WalletService implements WalletServiceInterface
     {
         try {
             DB::transaction(function () use ($amount, $userId, $title, $description) {
+                $status = OrderStatusEnum::PENDING_PAYMENT->value;
                 Order::create([
                     'amount' => $amount,
                     'user_id' => $userId,
@@ -43,7 +44,7 @@ class WalletService implements WalletServiceInterface
                     'amount' => $amount,
                     'type' => TransactionTypeEnum::CREDIT->value,
                     'user_id' => $to->id,
-                    'description' => 'Received fund from ' . $from->email,
+                    'description' => 'Received fund from #email: ' . $from->email,
                     'created_by' => $from->id,
                 ]);
 
@@ -51,7 +52,7 @@ class WalletService implements WalletServiceInterface
                     'amount' => $amount,
                     'type' => TransactionTypeEnum::DEBIT->value,
                     'user_id' => $from->id,
-                    'description' => 'Transferred fund to ' . $to->email,
+                    'description' => 'Transferred fund to #email: ' . $to->email,
                 ]);
 
                 $from->update(['amount' => $from->amount - $amount]);

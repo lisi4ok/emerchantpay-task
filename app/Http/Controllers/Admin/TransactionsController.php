@@ -8,7 +8,6 @@ use App\Enums\TransactionTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreOrderRequest;
 use App\Http\Requests\Admin\StoreTransactionRequest;
-use App\Http\Requests\Admin\UpdateOrderRequest;
 use App\Http\Requests\Admin\UpdateTransactionRequest;
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\TransactionResource;
@@ -38,76 +37,54 @@ class TransactionsController extends Controller
         ]);
     }
 
-    public function create()
+    public function addView()
     {
         return Inertia::render('Admin/Transactions/Create', [
             'users' => User::where('role', '!=', RoleEnum::ADMINISTRATOR->value)->get(),
             'types' => array_flip(TransactionTypeEnum::array()),
+            'routeName' => 'admin.transactions.add',
         ]);
     }
 
-    public function store(StoreTransactionRequest $request)
+    public function add(StoreTransactionRequest $request)
     {
         try {
             DB::transaction(function () use ($request) {
-                $transaction = Transaction::create($request->validated());
-                $this->updateTransactionUser($transaction);
+                Transaction::create($request->validated() + [
+                    'type' => TransactionTypeEnum::CREDIT->value,
+                    'description' => 'Received funds #email: ' + $request->user()->email,
+                ]);
             });
         } catch (\Throwable $exception) {
             return redirect()->back()->with('error', $exception->getMessage());
         }
 
-        return redirect()->route('admin.transactions.index')->with('success', 'Transaction created');
+        return redirect()->route('admin.transactions')->with('success', 'Money Added');
     }
 
-    public function show(int $id)
+
+    public function decreaseView()
     {
-        $transaction = Transaction::with('user')->findOrFail($id);
-
-        return Inertia::render('Admin/Transactions/Show', [
-            'transaction' => $transaction,
-        ]);
-    }
-
-    public function edit(int $id)
-    {
-        $transaction = Transaction::with('user')->findOrFail($id);
-
-        return Inertia::render('Admin/Transactions/Edit', [
-            'transaction' => $transaction,
+        return Inertia::render('Admin/Transactions/Create', [
             'users' => User::where('role', '!=', RoleEnum::ADMINISTRATOR->value)->get(),
             'types' => array_flip(TransactionTypeEnum::array()),
+            'routeName' => 'admin.transactions.decrease',
         ]);
     }
 
-    public function update(UpdateTransactionRequest $request, int $id)
+    public function decrease(StoreTransactionRequest $request)
     {
-        $transaction = Transaction::with('user')->findOrFail($id);
         try {
-            DB::transaction(function () use ($transaction, $request) {
-                $transaction->update($request->validated());
-                $this->updateTransactionUser($transaction);
+            DB::transaction(function () use ($request) {
+                Transaction::create($request->validated() + [
+                    'type' => TransactionTypeEnum::DEBIT->value,
+                    'description' => 'Decreased funds #email: ' + $request->user()->email,
+                ]);
             });
         } catch (\Throwable $exception) {
             return redirect()->back()->with('error', $exception->getMessage());
         }
 
-        return redirect()->route('admin.transactions.index')->with('success', 'Transaction updated');
-    }
-
-    public function destroy($id)
-    {
-        Transaction::findOrFail($id)->delete();
-
-        return redirect()->route('admin.transactions.index')->with('success', 'Transaction deleted');
-    }
-
-    private function updateTransactionUser(Transaction $transaction)
-    {
-        if ($transaction->type == TransactionTypeEnum::DEBIT->value) {
-            $transaction->user()->update(['amount' => $transaction->user->amount - $transaction->amount]);
-        } elseif ($transaction->type == TransactionTypeEnum::CREDIT->value) {
-            $transaction->user()->update(['amount' => $transaction->user->amount + $transaction->amount]);
-        }
+        return redirect()->route('admin.transactions')->with('success', 'Money Decreased');
     }
 }

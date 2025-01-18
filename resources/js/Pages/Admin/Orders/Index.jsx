@@ -5,7 +5,7 @@ import TableHeading from "@/Components/TableHeading";
 import { Head, Link, router } from "@inertiajs/react";
 import SelectInput from "@/Components/SelectInput.jsx";
 
-export default function Index({ auth, orders, statuses, queryParams = null }) {
+export default function Index({ auth, orders, statuses, pendingPaymentStatus, queryParams = null }) {
   queryParams = queryParams || {};
   const searchFieldChanged = (name, value) => {
     if (value) {
@@ -52,12 +52,6 @@ export default function Index({ auth, orders, statuses, queryParams = null }) {
           <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             Orders
           </h2>
-          <Link
-            href={route("admin.orders.create")}
-            className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600"
-          >
-            Create new
-          </Link>
         </div>
       }
     >
@@ -181,24 +175,16 @@ export default function Index({ auth, orders, statuses, queryParams = null }) {
                         {order.created_at}
                       </td>
                       <td className="px-3 py-2 text-nowrap">
-                        <Link
-                          href={route("admin.orders.show", order.id)}
-                          className="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1"
-                        >
-                          View
-                        </Link>
-                        <Link
+                        {(pendingPaymentStatus == order.status) && (
+                          <>
+                          <Link
                           href={route("admin.orders.edit", order.id)}
                           className="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1"
                         >
-                          Edit
+                          Change Status
                         </Link>
-                        <button
-                          onClick={(e) => deleteOrder(order)}
-                          className="font-medium text-red-600 dark:text-red-500 hover:underline mx-1"
-                        >
-                          Delete
-                        </button>
+                          </>
+                        )}
                       </td>
                       </tr>
                     ))}

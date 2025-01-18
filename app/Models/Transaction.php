@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use App\Enums\TransactionTypeEnum;
+use App\Observers\TransactionObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Auth;
 
+#[ObservedBy([TransactionObserver::class])]
 class Transaction extends Model
 {
     /** @use HasFactory<\Database\Factories\OrderFactory> */
@@ -32,21 +33,6 @@ class Transaction extends Model
         'description',
         'created_by',
     ];
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        if (Auth::user()) {
-//            static::updating(function($table) {
-//                $table->updated_by = Auth::user()->id;
-//            });
-
-            static::saving(function($table) {
-                $table->created_by = Auth::user()->id;
-            });
-        }
-    }
 
     /**
      * Get the attributes that should be cast.

@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\UserStatusEnum;
+use App\Observers\UserObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -11,7 +13,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
@@ -22,6 +23,7 @@ use App\Traits\Imageable;
 //use App\Interfaces\HasImageInterface;
 //use App\Traits\HasImage;
 
+#[ObservedBy([UserObserver::class])]
 class User extends Authenticatable implements ImageInterface // MustVerifyEmail, HasImageInterface
 {
     use HasApiTokens, HasFactory, Notifiable, HasSlug, Imageable; //, HasImage;
@@ -67,23 +69,6 @@ class User extends Authenticatable implements ImageInterface // MustVerifyEmail,
     ];
 
     protected ?Collection $permissions;
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        if (!Auth::user()) {
-            return;
-        }
-
-        static::updating(function($table) {
-            $table->updated_by = Auth::user()->id;
-        });
-
-        static::saving(function($table) {
-            $table->created_by = Auth::user()->id;
-        });
-    }
 
     /**
      * Get the attributes that should be cast.

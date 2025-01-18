@@ -53,10 +53,17 @@ export default function Index({ auth, transactions, types, queryParams = null })
             Transactions
           </h2>
           <Link
-            href={route("admin.transactions.create")}
+            href={route("admin.transactions.addView")}
             className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600"
           >
-            Create new
+            Add Money
+          </Link>
+
+          <Link
+            href={route("admin.transactions.decreaseView")}
+            className="bg-rose-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-rose-600"
+          >
+            Decrease Money
           </Link>
         </div>
       }
@@ -104,7 +111,6 @@ export default function Index({ auth, transactions, types, queryParams = null })
                     >
                       Create Date
                     </TableHeading>
-                    <th className="px-3 py-3 text-right">Actions</th>
                   </tr>
                   </thead>
                   <thead
@@ -140,7 +146,6 @@ export default function Index({ auth, transactions, types, queryParams = null })
                     </th>
                     <th className="px-3 py-3"></th>
                     <th className="px-3 py-3"></th>
-                    <th className="px-3 py-3"></th>
                   </tr>
                   </thead>
                   <tbody>
@@ -154,26 +159,6 @@ export default function Index({ auth, transactions, types, queryParams = null })
                       <td className="px-3 py-2">{transaction.user.name}</td>
                       <td className="px-3 py-2 text-nowrap">
                         {transaction.created_at}
-                      </td>
-                      <td className="px-3 py-2 text-nowrap">
-                        <Link
-                          href={route("admin.transactions.show", transaction.id)}
-                          className="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1"
-                        >
-                          View
-                        </Link>
-                        <Link
-                          href={route("admin.transactions.edit", transaction.id)}
-                          className="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1"
-                        >
-                          Edit
-                        </Link>
-                        <button
-                          onClick={(e) => deleteTransaction(transaction)}
-                          className="font-medium text-red-600 dark:text-red-500 hover:underline mx-1"
-                        >
-                          Delete
-                        </button>
                       </td>
                     </tr>
                   ))}

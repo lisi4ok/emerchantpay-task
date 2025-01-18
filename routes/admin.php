@@ -15,7 +15,14 @@ Route::middleware('auth')->group(function () {
     ], function () {
         Route::resource('users', UsersController::class);
         Route::resource('roles', RolesController::class);
-        Route::resource('transactions', TransactionsController::class);
-        Route::resource('orders', OrdersController::class);
+
+        Route::get('transactions', [TransactionsController::class, 'index'])->name('transactions');
+        Route::get('add', [TransactionsController::class, 'addView'])->name('transactions.addView');
+        Route::post('add', [TransactionsController::class, 'add'])->name('transactions.add');
+        Route::get('decrease', [TransactionsController::class, 'addView'])->name('transactions.decreaseView');
+        Route::post('decrease', [TransactionsController::class, 'decrease'])->name('transactions.decrease');
+
+        Route::resource('orders', OrdersController::class)
+            ->only(['index', 'edit', 'update']);
     });
 });

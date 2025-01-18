@@ -4,20 +4,17 @@ import TextInput from "@/Components/TextInput";
 import SelectInput from "@/Components/SelectInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
-import TextAreaInput from "@/Components/TextAreaInput";
 
-export default function Create({ auth, users, types }) {
+export default function Create({ auth, users, routeName }) {
   const { data, setData, post, errors, reset } = useForm({
     user_id: "",
-    type: "",
     amount: "",
-    description: "",
   });
 
   const onSubmit = (e) => {
     e.preventDefault();
 
-    post(route("admin.transactions.store"));
+    post(route(routeName));
   };
 
   return (
@@ -26,7 +23,7 @@ export default function Create({ auth, users, types }) {
       header={
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Create new
+            Add Money ( [CREDIT] Transaction )
           </h2>
         </div>
       }
@@ -57,26 +54,6 @@ export default function Create({ auth, users, types }) {
               </div>
 
               <div className="mt-4">
-                <InputLabel htmlFor="type" value="Type"/>
-
-                <SelectInput
-                  name="type"
-                  id="type"
-                  className="mt-1 block w-full"
-                  onChange={(e) => setData("type", e.target.value)}
-                >
-                  <option value="">Select Type</option>
-                  {types.map((transactionType, index) => (
-                    <option value={index} key={index}>
-                      {transactionType}
-                    </option>
-                  ))}
-                </SelectInput>
-
-                <InputError message={errors.type} className="mt-2"/>
-              </div>
-
-              <div className="mt-4">
                 <InputLabel htmlFor="user_id" value="User"/>
 
                 <SelectInput
@@ -96,24 +73,9 @@ export default function Create({ auth, users, types }) {
                 <InputError message={errors.user_id} className="mt-2"/>
               </div>
 
-              <div className="mt-4">
-                <InputLabel htmlFor="description" value="Description"/>
-
-                <TextAreaInput
-                  id="description"
-                  type="text"
-                  name="description"
-                  value={data.description}
-                  className="mt-1 block w-full"
-                  onChange={(e) => setData("description", e.target.value)}
-                />
-
-                <InputError message={errors.description} className="mt-2"/>
-              </div>
-
               <div className="mt-4 text-right">
                 <Link
-                  href={route("admin.transactions.index")}
+                  href={route("admin.transactions")}
                   className="bg-gray-100 py-1 px-3 text-gray-800 rounded shadow transition-all hover:bg-gray-200 mr-2"
                 >
                   Cancel

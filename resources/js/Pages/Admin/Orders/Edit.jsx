@@ -1,24 +1,19 @@
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import SelectInput from "@/Components/SelectInput";
-import TextAreaInput from "@/Components/TextAreaInput";
-import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
 
-export default function Create({ auth, order, users, statuses }) {
+export default function Create({ auth, order, statuses, orderStatus }) {
   const { data, setData, post, errors, reset } = useForm({
-    user_id: order.user_id ,
     status: order.status,
-    amount: order.amount,
-    title: order.title,
-    description: order.description,
     _method: "PUT",
   });
-
+  data['permissions'] = Array.from(statuses).map((p, i) => p);
+  statuses.filter
   const onSubmit = (e) => {
     e.preventDefault();
-
+      statuses.filter
     post(route("admin.orders.update", order.id));
   };
 
@@ -28,7 +23,7 @@ export default function Create({ auth, order, users, statuses }) {
       header={
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Edit Order # {order.id}
+            Order # {order.id}
           </h2>
         </div>
       }
@@ -42,20 +37,32 @@ export default function Create({ auth, order, users, statuses }) {
               onSubmit={onSubmit}
               className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg"
             >
-              <div className="mt-4">
-                <InputLabel htmlFor="amount" value="Amount"/>
 
-                <TextInput
-                  id="amount"
-                  type="text"
-                  name="amount"
-                  value={data.amount}
-                  className="mt-1 block w-full"
-                  isFocused={true}
-                  onChange={(e) => setData("amount", e.target.value)}
-                />
+              <div className="p-6 text-gray-900 dark:text-gray-100">
+                <div className="grid gap-1 grid-cols-2 mt-2">
+                  <div>
+                    <label className="font-bold text-lg">Order ID</label>
+                    <p className="mt-1">{order.id}</p>
+                  </div>
+                  <div>
+                    <label className="font-bold text-lg">Order Amount</label>
+                    <p className="mt-1">{order.amount}</p>
+                  </div>
+                  <div>
+                    <label className="font-bold text-lg">Order Status</label>
+                    <p className="mt-1">{orderStatus}</p>
+                  </div>
+                  <div>
+                    <label className="font-bold text-lg">User</label>
+                    <p className="mt-1">{order.user.name}</p>
+                    <p className="mt-1">{order.user.email}</p>
+                  </div>
 
-                <InputError message={errors.amount} className="mt-2"/>
+                  <div className="mt-4">
+                    <label className="font-bold text-lg">Title</label>
+                    <p className="mt-1">{order.title}</p>
+                  </div>
+                </div>
               </div>
 
               <div className="mt-4">
@@ -63,83 +70,27 @@ export default function Create({ auth, order, users, statuses }) {
 
                 <SelectInput
                   name="status"
-                  id="status"
-                  className="mt-1 block w-full"
-                  onChange={(e) => setData("status", e.target.value)}
-                  defaultValue={order.status}
-                >
-                  <option value="">Select Status</option>
-                  {statuses.map((status, index) => (
-                    <option value={index}
-                            key={index}
-                            selected={order.status === index}
+                      id="status"
+                      className="mt-1 block w-full"
+                      onChange={(e) => setData("status", e.target.value)}
+                      defaultValue={order.status}
                     >
-                      {status}
-                    </option>
+                      <option value="">Select Status</option>
+                  {statuses.map((status, index) => (
+                    (status != orderStatus) && (
+                      <option value={index} key={index}>
+                        {status}
+                      </option>
+                    )
                   ))}
                 </SelectInput>
 
                 <InputError message={errors.status} className="mt-2"/>
               </div>
 
-              <div className="mt-4">
-                <InputLabel htmlFor="user_id" value="User"/>
-
-                <SelectInput
-                  name="user_id"
-                  id="user_id"
-                  className="mt-1 block w-full"
-                  onChange={(e) => setData("user_id", e.target.value)}
-                  defaultValue={order.user_id}
-                >
-                  <option value="">Select User</option>
-                  {users.map((user) => (
-                    <option value={user.id}
-                            key={user.id}
-                            selected={(order.user_id === user.id)}
-                    >
-                      {user.name}
-                    </option>
-                  ))}
-                </SelectInput>
-
-                <InputError message={errors.user_id} className="mt-2"/>
-              </div>
-
-
-              <div className="mt-4">
-                <InputLabel htmlFor="title" value="Title"/>
-
-                <TextInput
-                  id="title"
-                  type="text"
-                  name="title"
-                  value={data.title}
-                  className="mt-1 block w-full"
-                  onChange={(e) => setData("title", e.target.value)}
-                />
-
-                <InputError message={errors.title} className="mt-2"/>
-              </div>
-
-              <div className="mt-4">
-                <InputLabel htmlFor="description" value="Description"/>
-
-                <TextAreaInput
-                  id="description"
-                  type="text"
-                  name="description"
-                  value={data.description}
-                  className="mt-1 block w-full"
-                  onChange={(e) => setData("description", e.target.value)}
-                />
-
-                <InputError message={errors.description} className="mt-2"/>
-              </div>
-
               <div className="mt-4 text-right">
-                <Link
-                  href={route("admin.users.index")}
+              <Link
+                  href={route("admin.orders.index")}
                   className="bg-gray-100 py-1 px-3 text-gray-800 rounded shadow transition-all hover:bg-gray-200 mr-2"
                 >
                   Cancel
@@ -154,5 +105,5 @@ export default function Create({ auth, order, users, statuses }) {
         </div>
       </div>
     </AuthenticatedLayout>
-    );
+);
 }

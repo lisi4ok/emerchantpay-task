@@ -16,7 +16,7 @@ class TransactionService //implements WalletServiceInterface
     {
         try {
             DB::transaction(function () use ($amount, $title, $description) {
-                $status = OrderStatusEnum::PENDING->value;
+                $status = OrderStatusEnum::PENDING_PAYMENT->value;
                 Order::create(compact('amount', 'title', 'description', 'status'));
             });
         } catch (\Throwable $exception) {
