@@ -9,7 +9,7 @@ use App\Models\Transaction;
 
 class OrderObserver
 {
-    public function updated(Order $order): void
+    public function updating(Order $order): void
     {
         $type = null;
         if ($order->status == OrderStatusEnum::COMPLETED->value) {
@@ -32,6 +32,7 @@ class OrderObserver
             'type' => $type,
             'description' => 'Purchased funds #order_id: ' . $order->id,
         ]);
-        $order->update(['description' => $order->description . PHP_EOL . 'Payment funds #transaction_id: ' . $transaction->id]);
+
+        $order->description = 'Payment funds #transaction_id: ' . $transaction->id . PHP_EOL . $order->description;
     }
 }

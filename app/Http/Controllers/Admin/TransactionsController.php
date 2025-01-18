@@ -2,19 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\OrderStatusEnum;
 use App\Enums\RoleEnum;
 use App\Enums\TransactionTypeEnum;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\StoreOrderRequest;
 use App\Http\Requests\Admin\StoreTransactionRequest;
-use App\Http\Requests\Admin\UpdateTransactionRequest;
-use App\Http\Resources\OrderResource;
 use App\Http\Resources\TransactionResource;
-use App\Models\Order;
 use App\Models\Transaction;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -52,7 +46,7 @@ class TransactionsController extends Controller
             DB::transaction(function () use ($request) {
                 Transaction::create($request->validated() + [
                     'type' => TransactionTypeEnum::CREDIT->value,
-                    'description' => 'Received funds #email: ' + $request->user()->email,
+                    'description' => 'Received funds #email: ' . $request->user()->email,
                 ]);
             });
         } catch (\Throwable $exception) {
@@ -78,7 +72,7 @@ class TransactionsController extends Controller
             DB::transaction(function () use ($request) {
                 Transaction::create($request->validated() + [
                     'type' => TransactionTypeEnum::DEBIT->value,
-                    'description' => 'Decreased funds #email: ' + $request->user()->email,
+                    'description' => 'Decreased funds #email: ' . $request->user()->email,
                 ]);
             });
         } catch (\Throwable $exception) {

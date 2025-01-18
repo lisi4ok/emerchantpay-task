@@ -51,7 +51,7 @@ export default function Dashboard({ role, amount }) {
                   </div>
                   <div className="p-6 text-gray-900 dark:text-gray-100">
                     <Link
-                      href={route("merchant.money.transfer")}
+                      href={route("merchant.money.send")}
                       className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600"
                     >
                       Send Money
