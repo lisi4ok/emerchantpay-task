@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Enums\TransactionTypeEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateTransactionRequest extends FormRequest
 {
@@ -22,7 +24,10 @@ class UpdateTransactionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'type' => ['required', Rule::enum(TransactionTypeEnum::class)],
+            'user_id' => ['required', 'exists:users,id'],
+            'amount' => ['required', 'numeric'],
+            'description' => ['nullable', 'string'],
         ];
     }
 }

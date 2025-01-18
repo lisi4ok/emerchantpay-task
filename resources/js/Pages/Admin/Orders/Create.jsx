@@ -48,7 +48,7 @@ export default function Create({ auth, users, statuses }) {
                   id="amount"
                   type="text"
                   name="amount"
-                  value={data.name}
+                  value={data.amount}
                   className="mt-1 block w-full"
                   isFocused={true}
                   onChange={(e) => setData("amount", e.target.value)}

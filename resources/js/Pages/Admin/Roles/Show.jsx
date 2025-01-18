@@ -1,5 +1,5 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
+import {Head, Link} from "@inertiajs/react";
 export default function Show({ auth, role, permissions, queryParams }) {
   return (
     <AuthenticatedLayout
@@ -51,6 +51,15 @@ export default function Show({ auth, role, permissions, queryParams }) {
                     }
                   </ul>
                 </div>
+              </div>
+
+              <div className="mt-4 text-right">
+                <Link
+                  href={route("admin.roles.index")}
+                  className="bg-gray-100 py-1 px-3 text-gray-800 rounded shadow transition-all hover:bg-gray-200 mr-2"
+                >
+                  Back
+                </Link>
               </div>
             </div>
           </div>

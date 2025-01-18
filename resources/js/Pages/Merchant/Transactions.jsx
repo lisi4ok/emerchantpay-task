@@ -82,7 +82,6 @@ export default function Index({ auth, transactions, transactionsTypes, queryPara
                       >
                         Create Date
                       </TableHeading>
-                      <th className="px-3 py-3 text-right">Actions</th>
                     </tr>
                   </thead>
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
@@ -116,7 +115,6 @@ export default function Index({ auth, transactions, transactionsTypes, queryPara
                       />
                     </th>
                     <th className="px-3 py-3"></th>
-                    <th className="px-3 py-3"></th>
                   </tr>
                   </thead>
                   <tbody>
@@ -129,14 +127,6 @@ export default function Index({ auth, transactions, transactionsTypes, queryPara
                       <td className="px-3 py-2">{transaction.amount}</td>
                       <td className="px-3 py-2 text-nowrap">
                         {transaction.created_at}
-                      </td>
-                      <td className="px-3 py-2 text-nowrap">
-                        <Link
-                          href={route("merchant.transactions.show", transaction.id)}
-                          className="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1"
-                        >
-                          View
-                        </Link>
                       </td>
                     </tr>
                   ))}

@@ -5,25 +5,19 @@ import SelectInput from "@/Components/SelectInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
 import TextAreaInput from "@/Components/TextAreaInput";
-import Checkbox from "@/Components/Checkbox";
 
-export default function Create({ auth, roles }) {
+export default function Create({ auth, users, types }) {
   const { data, setData, post, errors, reset } = useForm({
-    name: "",
-    email: "",
-    password: "",
-    password_confirmation: "",
+    user_id: "",
+    type: "",
     amount: "",
     description: "",
-    roles: [],
-    role: "",
   });
 
   const onSubmit = (e) => {
     e.preventDefault();
 
-    data['roles'] = Array.from(document.querySelectorAll('input[name="roles[]"]:checked')).map((p) => p.value);
-    post(route("admin.users.store"));
+    post(route("admin.transactions.store"));
   };
 
   return (
@@ -32,12 +26,12 @@ export default function Create({ auth, roles }) {
       header={
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Create new User
+            Create new
           </h2>
         </div>
       }
     >
-      <Head title="Users" />
+      <Head title="Transactions" />
 
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -47,75 +41,6 @@ export default function Create({ auth, roles }) {
               className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg"
             >
               <div className="mt-4">
-                <InputLabel htmlFor="name" value="Name"/>
-
-                <TextInput
-                  id="name"
-                  type="text"
-                  name="name"
-                  value={data.name}
-                  className="mt-1 block w-full"
-                  isFocused={true}
-                  onChange={(e) => setData("name", e.target.value)}
-                />
-
-                <InputError message={errors.name} className="mt-2"/>
-              </div>
-              <div className="mt-4">
-                <InputLabel htmlFor="email" value="Email"/>
-
-                <TextInput
-                  id="email"
-                  type="text"
-                  name="email"
-                  value={data.email}
-                  className="mt-1 block w-full"
-                  onChange={(e) => setData("email", e.target.value)}
-                />
-
-                <InputError message={errors.email} className="mt-2"/>
-              </div>
-
-              <div className="mt-4">
-                <InputLabel htmlFor="password" value="Password"/>
-
-                <TextInput
-                  id="password"
-                  type="password"
-                  name="password"
-                  value={data.password}
-                  className="mt-1 block w-full"
-                  onChange={(e) => setData("password", e.target.value)}
-                />
-
-                <InputError message={errors.password} className="mt-2"/>
-              </div>
-
-              <div className="mt-4">
-                <InputLabel
-                  htmlFor="password_confirmation"
-                  value="Confirm Password"
-                />
-
-                <TextInput
-                  id="password_confirmation"
-                  type="password"
-                  name="password_confirmation"
-                  value={data.password_confirmation}
-                  className="mt-1 block w-full"
-                  onChange={(e) =>
-                    setData("password_confirmation", e.target.value)
-                  }
-                />
-
-                <InputError
-                  message={errors.password_confirmation}
-                  className="mt-2"
-                />
-              </div>
-
-
-              <div className="mt-4">
                 <InputLabel htmlFor="amount" value="Amount"/>
 
                 <TextInput
@@ -124,10 +49,51 @@ export default function Create({ auth, roles }) {
                   name="amount"
                   value={data.amount}
                   className="mt-1 block w-full"
+                  isFocused={true}
                   onChange={(e) => setData("amount", e.target.value)}
                 />
 
                 <InputError message={errors.amount} className="mt-2"/>
+              </div>
+
+              <div className="mt-4">
+                <InputLabel htmlFor="type" value="Type"/>
+
+                <SelectInput
+                  name="type"
+                  id="type"
+                  className="mt-1 block w-full"
+                  onChange={(e) => setData("type", e.target.value)}
+                >
+                  <option value="">Select Type</option>
+                  {types.map((transactionType, index) => (
+                    <option value={index} key={index}>
+                      {transactionType}
+                    </option>
+                  ))}
+                </SelectInput>
+
+                <InputError message={errors.type} className="mt-2"/>
+              </div>
+
+              <div className="mt-4">
+                <InputLabel htmlFor="user_id" value="User"/>
+
+                <SelectInput
+                  name="user_id"
+                  id="user_id"
+                  className="mt-1 block w-full"
+                  onChange={(e) => setData("user_id", e.target.value)}
+                >
+                  <option value="">Select User</option>
+                  {users.map((user) => (
+                    <option value={user.id} key={user.id}>
+                      {user.name}
+                    </option>
+                  ))}
+                </SelectInput>
+
+                <InputError message={errors.user_id} className="mt-2"/>
               </div>
 
               <div className="mt-4">
@@ -145,49 +111,9 @@ export default function Create({ auth, roles }) {
                 <InputError message={errors.description} className="mt-2"/>
               </div>
 
-              <div className="mt-4">
-                <InputLabel htmlFor="role_id" value="Role"/>
-
-                <SelectInput
-                  name="role"
-                  id="role"
-                  className="mt-1 block w-full"
-                  onChange={(e) => setData("role", e.target.value)}
-                >
-                  <option value="">Select Role</option>
-                  {roles.map((role) => (
-                    <option value={role.id} key={role.id}>
-                      {role.name}
-                    </option>
-                  ))}
-                </SelectInput>
-
-                <InputError message={errors.role} className="mt-2"/>
-              </div>
-
-              <div className="mt-4 block">
-                {
-                  roles.map(role => {
-                    return (
-                      <label className="flex items-center" key={role.id}>
-                        <Checkbox
-                          name="roles[]"
-                          value={role.id}
-                        />
-                        <span className="ms-2 text-sm text-gray-600 dark:text-gray-400">
-                          {role.name}
-                        </span>
-                      </label>
-                    );
-                  })
-                }
-
-                <InputError message={errors.roles} className="mt-2"/>
-              </div>
-
               <div className="mt-4 text-right">
                 <Link
-                  href={route("admin.users.index")}
+                  href={route("admin.transactions.index")}
                   className="bg-gray-100 py-1 px-3 text-gray-800 rounded shadow transition-all hover:bg-gray-200 mr-2"
                 >
                   Cancel

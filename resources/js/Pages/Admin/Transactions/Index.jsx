@@ -3,8 +3,9 @@ import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import TableHeading from "@/Components/TableHeading";
 import { Head, Link, router } from "@inertiajs/react";
+import SelectInput from "@/Components/SelectInput.jsx";
 
-export default function Index({ auth, transactions, queryParams = null, success }) {
+export default function Index({ auth, transactions, types, queryParams = null }) {
   queryParams = queryParams || {};
   const searchFieldChanged = (name, value) => {
     if (value) {
@@ -52,7 +53,7 @@ export default function Index({ auth, transactions, queryParams = null, success 
             Transactions
           </h2>
           <Link
-            href={route("admin.users.create")}
+            href={route("admin.transactions.create")}
             className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600"
           >
             Create new
@@ -64,134 +65,122 @@ export default function Index({ auth, transactions, queryParams = null, success 
 
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-          {success && (
-            <div className="bg-emerald-500 py-2 px-4 text-white rounded mb-4">
-              {success}
-            </div>
-          )}
           <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
             <div className="p-6 text-gray-900 dark:text-gray-100">
               <div className="overflow-auto">
                 <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                  <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
-                    <tr className="text-nowrap">
-                      <TableHeading
-                        name="id"
-                        sort_field={queryParams.sort_field}
-                        sort_direction={queryParams.sort_direction}
-                        sortChanged={sortChanged}
-                      >
-                        ID
-                      </TableHeading>
-                      <TableHeading
-                        name="title"
-                        sort_field={queryParams.sort_field}
-                        sort_direction={queryParams.sort_direction}
-                        sortChanged={sortChanged}
-                      >
-                        Title
-                      </TableHeading>
-
-                      <TableHeading
-                        name="type"
-                        sort_field={queryParams.sort_field}
-                        sort_direction={queryParams.sort_direction}
-                        sortChanged={sortChanged}
-                      >
-                        Type
-                      </TableHeading>
-
-                        <TableHeading
-                            name="amount"
-                            sort_field={queryParams.sort_field}
-                            sort_direction={queryParams.sort_direction}
-                            sortChanged={sortChanged}
-                        >
-                            Amount
-                        </TableHeading>
-
-                      <TableHeading
-                        name="created_at"
-                        sort_field={queryParams.sort_field}
-                        sort_direction={queryParams.sort_direction}
-                        sortChanged={sortChanged}
-                      >
-                        Create Date
-                      </TableHeading>
-
-                      <th className="px-3 py-3 text-right">Actions</th>
-                    </tr>
+                  <thead
+                    className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
+                  <tr className="text-nowrap">
+                    <TableHeading
+                      name="type"
+                      sort_field={queryParams.sort_field}
+                      sort_direction={queryParams.sort_direction}
+                      sortChanged={sortChanged}
+                    >
+                      Type
+                    </TableHeading>
+                    <TableHeading
+                      name="amount"
+                      sort_field={queryParams.sort_field}
+                      sort_direction={queryParams.sort_direction}
+                      sortChanged={sortChanged}
+                    >
+                      Amount
+                    </TableHeading>
+                    <TableHeading
+                      name="user"
+                      sort_field={queryParams.sort_field}
+                      sort_direction={queryParams.sort_direction}
+                      sortChanged={sortChanged}
+                    >
+                      User
+                    </TableHeading>
+                    <TableHeading
+                      name="created_at"
+                      sort_field={queryParams.sort_field}
+                      sort_direction={queryParams.sort_direction}
+                      sortChanged={sortChanged}
+                    >
+                      Create Date
+                    </TableHeading>
+                    <th className="px-3 py-3 text-right">Actions</th>
+                  </tr>
                   </thead>
-                  <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
-                    <tr className="text-nowrap">
-                      <th className="px-3 py-3"></th>
-                      <th className="px-3 py-3">
-                        <TextInput
-                          className="w-full"
-                          defaultValue={queryParams.title}
-                          placeholder="Transaction Name"
-                          onBlur={(e) =>
-                            searchFieldChanged("title", e.target.value)
-                          }
-                          onKeyPress={(e) => onKeyPress("title", e)}
-                        />
-                      </th>
-                      <th className="px-3 py-3">
-                        <TextInput
-                          className="w-full"
-                          defaultValue={queryParams.type}
-                          placeholder="Type"
-                          onBlur={(e) =>
-                            searchFieldChanged("type", e.target.value)
-                          }
-                          onKeyPress={(e) => onKeyPress("type", e)}
-                        />
-                      </th>
-                      <th className="px-3 py-3"></th>
-                      <th className="px-3 py-3"></th>
-                    </tr>
+                  <thead
+                    className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
+                  <tr className="text-nowrap">
+                    <th className="px-3 py-3">
+                      <SelectInput
+                        name="type"
+                        className="mt-1 block w-full"
+                        defaultValue={queryParams.type}
+                        onChange={(e) =>
+                          searchFieldChanged("type", e.target.value)
+                        }
+                      >
+                        <option value="">Type</option>
+                        {types.map((type, index) => (
+                          <option value={index} key={index}>
+                            {type}
+                          </option>
+                        ))}
+                      </SelectInput>
+                    </th>
+                    <th className="px-3 py-3">
+                      <TextInput
+                        className="w-full"
+                        defaultValue={queryParams.amount}
+                        placeholder="Amount"
+                        onBlur={(e) =>
+                          searchFieldChanged("amount", e.target.value)
+                        }
+                        onKeyPress={(e) => onKeyPress("Amount", e)}
+                      />
+                    </th>
+                    <th className="px-3 py-3"></th>
+                    <th className="px-3 py-3"></th>
+                    <th className="px-3 py-3"></th>
+                  </tr>
                   </thead>
                   <tbody>
-                    {transactions.data.map((transaction) => (
-                      <tr
-                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                        key={transaction.id}
-                      >
-                        <td className="px-3 py-2">{transaction.id}</td>
-                        <th className="px-3 py-2 text-nowrap">
-                          {transaction.title}
-                        </th>
-                        <td className="px-3 py-2">{transaction.type}</td>
-                        <td className="px-3 py-2">{transaction.amount}</td>
-                        <td className="px-3 py-2 text-nowrap">
-                          {transaction.created_at}
-                        </td>
-                        <td className="px-3 py-2 text-nowrap">
-                          <Link
-                            href={route("admin.transactions.show", transaction.id)}
-                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1"
-                          >
-                            View
-                          </Link>
-                          <Link
-                            href={route("admin.transactions.edit", transaction.id)}
-                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1"
-                          >
-                            Edit
-                          </Link>
-                          <button
-                            onClick={(e) => deleteTransaction(transaction)}
-                            className="font-medium text-red-600 dark:text-red-500 hover:underline mx-1"
-                          >
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
+                  {transactions.data.map((transaction) => (
+                    <tr
+                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                      key={transaction.id}
+                    >
+                      <td className="px-3 py-2">{transaction.type}</td>
+                      <td className="px-3 py-2">{transaction.amount}</td>
+                      <td className="px-3 py-2">{transaction.user.name}</td>
+                      <td className="px-3 py-2 text-nowrap">
+                        {transaction.created_at}
+                      </td>
+                      <td className="px-3 py-2 text-nowrap">
+                        <Link
+                          href={route("admin.transactions.show", transaction.id)}
+                          className="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1"
+                        >
+                          View
+                        </Link>
+                        <Link
+                          href={route("admin.transactions.edit", transaction.id)}
+                          className="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1"
+                        >
+                          Edit
+                        </Link>
+                        <button
+                          onClick={(e) => deleteTransaction(transaction)}
+                          className="font-medium text-red-600 dark:text-red-500 hover:underline mx-1"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
                   </tbody>
                 </table>
               </div>
-              <Pagination links={transactions.meta.links} />
+              <Pagination links={transactions.meta.links}/>
             </div>
           </div>
         </div>

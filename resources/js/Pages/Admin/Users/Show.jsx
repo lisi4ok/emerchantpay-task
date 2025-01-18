@@ -1,5 +1,5 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
+import {Head, Link} from "@inertiajs/react";
 export default function Show({ auth, user, queryParams }) {
   return (
     <AuthenticatedLayout
@@ -31,7 +31,7 @@ export default function Show({ auth, user, queryParams }) {
                     <p className="mt-1">
                       <span
                         className={
-                          "px-2 py-1 rounded text-white " +
+                          "px-2 py-1 rounded " +
                           user.status
                         }
                       >
@@ -62,6 +62,15 @@ export default function Show({ auth, user, queryParams }) {
               <div className="mt-4">
                 <label className="font-bold text-lg">Description</label>
                 <p className="mt-1">{user.description}</p>
+              </div>
+
+              <div className="mt-4 text-right">
+                <Link
+                  href={route("admin.users.index")}
+                  className="bg-gray-100 py-1 px-3 text-gray-800 rounded shadow transition-all hover:bg-gray-200 mr-2"
+                >
+                  Back
+                </Link>
               </div>
             </div>
           </div>

@@ -1,16 +1,16 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
-export default function Show({ auth, user, queryParams }) {
+import {Head, Link} from "@inertiajs/react";
+export default function Show({ auth, transaction, queryParams }) {
   return (
     <AuthenticatedLayout
       user={auth.user}
       header={
         <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-          {`User "${user.name}"`}
+          {`Transaction # ${transaction.id}`}
         </h2>
       }
     >
-      <Head title={`User "${user.name}"`} />
+      <Head title={`Transaction # ${transaction.id}`} />
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -18,24 +18,28 @@ export default function Show({ auth, user, queryParams }) {
               <div className="grid gap-1 grid-cols-2 mt-2">
                 <div>
                   <div>
-                    <label className="font-bold text-lg">User ID</label>
-                    <p className="mt-1">{user.id}</p>
+                    <label className="font-bold text-lg">Transaction ID</label>
+                    <p className="mt-1">{transaction.id}</p>
                   </div>
                   <div className="mt-4">
-                    <label className="font-bold text-lg">Name</label>
-                    <p className="mt-1">{user.name}</p>
+                    <label className="font-bold text-lg">User Name</label>
+                    <p className="mt-1">{transaction.user.name}</p>
+                  </div>
+                  <div className="mt-4">
+                    <label className="font-bold text-lg">User Email</label>
+                    <p className="mt-1">{transaction.user.email}</p>
                   </div>
 
                   <div className="mt-4">
-                    <label className="font-bold text-lg">Status</label>
+                    <label className="font-bold text-lg">Type</label>
                     <p className="mt-1">
                       <span
                         className={
-                          "px-2 py-1 rounded text-white " +
-                          user.status
+                          "px-2 py-1 rounded " +
+                          transaction.type
                         }
                       >
-                        {user.status}
+                        {transaction.type}
                       </span>
                     </p>
                   </div>
@@ -43,25 +47,30 @@ export default function Show({ auth, user, queryParams }) {
                 <div>
                   <div className="mt-4">
                     <label className="font-bold text-lg">Create Date</label>
-                    <p className="mt-1">{user.created_at}</p>
+                    <p className="mt-1">{transaction.created_at}</p>
                   </div>
                   <div className="mt-4">
                     <label className="font-bold text-lg">Created By</label>
-                    <p className="mt-1">{(user.created_by) ? user.created_by.name : ''}</p>
-                  </div>
-                  <div className="mt-4">
-                    <label className="font-bold text-lg">Updated By</label>
-                    <p className="mt-1">{(user.updated_by) ? user.updated_by.name : ''}</p>
+                    <p className="mt-1">{(transaction.created_by) ? transaction.created_by.name : ''}</p>
                   </div>
                 </div>
               </div>
               <div className="mt-4">
                 <label className="font-bold text-lg">Amount</label>
-                <p className="mt-1">{user.amount}</p>
+                <p className="mt-1">{transaction.amount}</p>
               </div>
               <div className="mt-4">
                 <label className="font-bold text-lg">Description</label>
-                <p className="mt-1">{user.description}</p>
+                <p className="mt-1">{transaction.description}</p>
+              </div>
+
+              <div className="mt-4 text-right">
+                <Link
+                  href={route("admin.transactions.index")}
+                  className="bg-gray-100 py-1 px-3 text-gray-800 rounded shadow transition-all hover:bg-gray-200 mr-2"
+                >
+                  Back
+                </Link>
               </div>
             </div>
           </div>

@@ -3,8 +3,8 @@ export default function MerchantResponsiveNav({}) {
   return (
     <>
       <ResponsiveNavLink
-        href={route('merchant.transactions.index')}
-        active={route().current('merchant.transactions.index')}
+        href={route('merchant.transactions')}
+        active={route().current('merchant.transactions')}
       >
         Transactions
       </ResponsiveNavLink>
