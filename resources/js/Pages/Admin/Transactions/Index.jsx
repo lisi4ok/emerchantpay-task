@@ -3,7 +3,7 @@ import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import TableHeading from "@/Components/TableHeading";
 import { Head, Link, router } from "@inertiajs/react";
-import SelectInput from "@/Components/SelectInput.jsx";
+import SelectInput from "@/Components/SelectInput";
 
 export default function Index({ auth, transactions, types, queryParams = null }) {
   queryParams = queryParams || {};
