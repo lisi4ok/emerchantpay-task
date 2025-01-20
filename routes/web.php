@@ -4,11 +4,6 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/brtcs', function () {
-    event(new \App\Events\SendOrderCreatedMessage('You have new Order to approve'));
-    echo 'Ok';
-});
-
 Route::middleware(['guest'])->group(function () {
     Route::get('/', function () {
         return redirect()->route('login');

@@ -22,7 +22,7 @@ export default function AuthenticatedLayout({ header, children }) {
           .listen('SendOrderCreatedMessage', (e) => {
             toast.success(e.message);
           });
-      }, 5000);
+      }, 200);
     }
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
