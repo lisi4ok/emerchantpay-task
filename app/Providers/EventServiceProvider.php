@@ -11,7 +11,6 @@ use App\Observers\TransactionObserver;
 use App\Observers\OrderObserver;
 use Illuminate\Events\EventServiceProvider as ServiceProvider;
 
-
 class EventServiceProvider extends ServiceProvider
 {
     public function boot(): void

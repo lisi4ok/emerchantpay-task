@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Merchant;
 
+use App\Enums\MoneyTypeEnum;
 use App\Enums\RoleEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AddMoneyRequest;
@@ -25,6 +26,8 @@ class WalletController extends Controller
     {
         return Inertia::render('Merchant/AddMoney', [
             'amount' => (new UserResource(Auth::user()))->amount,
+            'addMoneyTypes' => array_flip(MoneyTypeEnum::array()),
+            'orderMoneyType' => MoneyTypeEnum::ORDER->value, // array_flip(MoneyTypeEnum::array())[MoneyTypeEnum::ORDER->value],
         ]);
     }
 
@@ -34,8 +37,7 @@ class WalletController extends Controller
             $this->walletService->addMoney(
                 (float) $request->validated('amount'),
                 (int) Auth::user()->id,
-                $request->validated('title'),
-                $request->validated('description'),
+                $request
             );
         } catch (\Throwable $exception) {
             return back()->with('error', $exception->getMessage());

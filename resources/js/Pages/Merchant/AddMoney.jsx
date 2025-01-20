@@ -5,15 +5,26 @@ import SelectInput from "@/Components/SelectInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
 import TextAreaInput from "@/Components/TextAreaInput";
+import React, { useState } from "react";
 
-export default function SendMoney({ auth, amount, error }) {
+export default function SendMoney({ auth, amount, addMoneyTypes, orderMoneyType, error }) {
   const { data, setData, post, errors, reset } = useForm({
     title: "",
     amount: "",
     description: "",
     type: "",
   });
-  console.log(error);
+
+  const [showOrderCreate, setShowOrderCreate] = useState(false);
+
+  const handleMoneyTypeChange = (e) => {
+    setData("type", e.target.value);
+    if (orderMoneyType == e.target.value) {
+      setShowOrderCreate(true);
+    } else {
+      setShowOrderCreate(false);
+    }
+  };
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -48,42 +59,29 @@ export default function SendMoney({ auth, amount, error }) {
                 </header>
               </section>
 
-
               <div className="mt-4">
-                <InputLabel htmlFor="title" value="Title" className="reqired"/>
-
-                <TextInput
-                  id="title"
-                  type="text"
-                  name="title"
-                  value={data.title}
-                  className="mt-1 block w-full"
-                  isFocused={true}
-                  onChange={(e) => setData("title", e.target.value)}
-                />
-
-                <InputError message={errors.title} className="mt-2"/>
-              </div>
-
-              <div className="mt-4">
-                <InputLabel htmlFor="type" value="Type"/>
-
+                <InputLabel htmlFor="type" value="Type" className="reqired"/>
                 <SelectInput
                   name="type"
                   id="type"
                   className="mt-1 block w-full"
-                  onChange={(e) => setData("type", e.target.value)}
+                  onChange={(e) => {handleMoneyTypeChange(e)}}
                 >
                   <option value="">Select Type</option>
-                  <option value="order" key="order">Order</option>
+                  {addMoneyTypes.map((type, index) => (
+                    <option value={index}
+                            key={index}
+                    >
+                      {type}
+                    </option>
+                  ))}
                 </SelectInput>
 
                 <InputError message={errors.type} className="mt-2"/>
               </div>
 
-
               <div className="mt-4">
-                <InputLabel htmlFor="amount" value="Amount" className="reqired"/>
+              <InputLabel htmlFor="amount" value="Amount" className="reqired"/>
 
                 <TextInput
                   id="amount"
@@ -98,21 +96,38 @@ export default function SendMoney({ auth, amount, error }) {
                 <InputError message={errors.amount} className="mt-2"/>
               </div>
 
-              <div className="mt-4">
-                <InputLabel htmlFor="description" value="Description"/>
+              <div style={{ display: showOrderCreate ? "block" : "none" }}>
+                <div className="mt-4">
+                  <InputLabel htmlFor="title" value="Title" className="reqired"/>
 
-                <TextAreaInput
-                  id="description"
-                  type="text"
-                  name="description"
-                  value={data.description}
-                  className="mt-1 block w-full"
-                  onChange={(e) => setData("description", e.target.value)}
-                />
+                  <TextInput
+                    id="title"
+                    type="text"
+                    name="title"
+                    value={data.title}
+                    className="mt-1 block w-full"
+                    isFocused={true}
+                    onChange={(e) => setData("title", e.target.value)}
+                  />
 
-                <InputError message={errors.description} className="mt-2"/>
+                  <InputError message={errors.title} className="mt-2"/>
+                </div>
+
+                <div className="mt-4">
+                  <InputLabel htmlFor="description" value="Description"/>
+
+                  <TextAreaInput
+                    id="description"
+                    type="text"
+                    name="description"
+                    value={data.description}
+                    className="mt-1 block w-full"
+                    onChange={(e) => setData("description", e.target.value)}
+                  />
+
+                  <InputError message={errors.description} className="mt-2"/>
+                </div>
               </div>
-
 
               <div className="mt-4 text-right">
                 <Link

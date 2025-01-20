@@ -2,11 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\UserStatusEnum;
-use Illuminate\Database\Query\Builder;
+use App\Enums\MoneyTypeEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Password;
 
 class AddMoneyRequest extends FormRequest
 {
@@ -26,9 +24,8 @@ class AddMoneyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'string', 'max:255'],
+            'type' => ['required', Rule::enum(MoneyTypeEnum::class)],
             'amount' => ['required', 'numeric'],
-            'description' => ['nullable', 'string'],
         ];
     }
 }

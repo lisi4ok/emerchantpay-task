@@ -2,31 +2,33 @@
 
 namespace App\Services;
 
-use App\Enums\OrderStatusEnum;
+use App\Enums\MoneyTypeEnum;
 use App\Enums\TransactionTypeEnum;
+use App\Http\Requests\AddMoneyRequest;
 use App\Interfaces\WalletServiceInterface;
-use App\Models\Order;
+use App\Events\AddMoneyByCreateOrder;
+use Exception;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class WalletService implements WalletServiceInterface
 {
-    public function addMoney(float $amount, int $userId, string $title, ?string $description = null): bool
+    public function addMoney(float $amount, int $userId, AddMoneyRequest $request): bool
     {
-        try {
-            DB::transaction(function () use ($amount, $userId, $title, $description) {
-                $status = OrderStatusEnum::PENDING_PAYMENT->value;
-                Order::create([
-                    'amount' => $amount,
-                    'user_id' => $userId,
-                    'status' => $status,
-                    'title' => $title,
-                    'description' => $description,
-                ]);
-            });
-        } catch (\Throwable $exception) {
-            throw new $exception;
+        switch ($request->type) {
+            case MoneyTypeEnum::ORDER->value:
+                AddMoneyByCreateOrder::dispatch($amount, $userId, $request);
+                break;
+            case MoneyTypeEnum::CARD->value:
+                throw new Exception('not supported');
+                break;
+            case MoneyTypeEnum::BANK->value:
+                throw new Exception('not supported');
+                break;
+            case MoneyTypeEnum::CASH->value:
+                throw new Exception('not supported');
+                break;
         }
 
         return true;
@@ -34,12 +36,12 @@ class WalletService implements WalletServiceInterface
 
     public function transferMoney(float $amount, User $from, User $to): bool
     {
+        if ($from->amount < $amount) {
+            throw new \Exception('Not enough money');
+        }
+
         try {
             DB::transaction(function () use ($amount, $from, $to) {
-                if ($from->amount < $amount) {
-                    throw new \Exception('Not enough money');
-                }
-
                 Transaction::create([
                     'amount' => $amount,
                     'type' => TransactionTypeEnum::CREDIT->value,
