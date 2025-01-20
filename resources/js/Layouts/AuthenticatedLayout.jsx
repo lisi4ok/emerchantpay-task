@@ -8,10 +8,22 @@ import AdminResponsiveNav from '@/Partials/AdminResponsiveNav';
 import MerchantResponsiveNav from '@/Partials/MerchantResponsiveNav';
 import Messages from "@/Partials/Messages";
 import { Link, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
+    const roles = usePage().props.roles;
+
+    if (user.role == roles['ADMINISTRATOR']) {
+      setTimeout(() => {
+        window.Echo.channel('order-created-message')
+          .listen('SendOrderCreatedMessage', (e) => {
+            toast.success(e.message);
+          });
+      }, 5000);
+    }
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
@@ -178,6 +190,7 @@ export default function AuthenticatedLayout({ header, children }) {
             )}
 
             <Messages />
+            <ToastContainer/>
 
             <main>{children}</main>
         </div>

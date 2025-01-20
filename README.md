@@ -74,6 +74,14 @@ docker compose -f ./docker-compose-{mysql|postgres}.yml up -d
 php artisan serve
 ```
 
+```
+php artisan queue:work
+```
+
+```
+php artisan reverb:start
+```
+
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
