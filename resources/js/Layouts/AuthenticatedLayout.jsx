@@ -2,11 +2,28 @@ import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
+import AdminNav from '@/Partials/AdminNav';
+import MerchantNav from '@/Partials/MerchantNav';
+import AdminResponsiveNav from '@/Partials/AdminResponsiveNav';
+import MerchantResponsiveNav from '@/Partials/MerchantResponsiveNav';
+import Messages from "@/Partials/Messages";
 import { Link, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
+    const roles = usePage().props.roles;
+
+    if (user.role == roles['ADMINISTRATOR']) {
+      setTimeout(() => {
+        window.Echo.channel('order-created-message')
+          .listen('SendOrderCreatedMessage', (e) => {
+            toast.success(e.message);
+          });
+      }, 200);
+    }
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
@@ -30,6 +47,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                 >
                                     Dashboard
                                 </NavLink>
+                              {(user.role == 3) ? <AdminNav /> : <MerchantNav />}
                             </div>
                         </div>
 
@@ -134,6 +152,7 @@ export default function AuthenticatedLayout({ header, children }) {
                         >
                             Dashboard
                         </ResponsiveNavLink>
+                      {(user.role == 3) ? <AdminResponsiveNav /> : <MerchantResponsiveNav />}
                     </div>
 
                     <div className="border-t border-gray-200 pb-1 pt-4 dark:border-gray-600">
@@ -169,6 +188,9 @@ export default function AuthenticatedLayout({ header, children }) {
                     </div>
                 </header>
             )}
+
+            <Messages />
+            <ToastContainer/>
 
             <main>{children}</main>
         </div>

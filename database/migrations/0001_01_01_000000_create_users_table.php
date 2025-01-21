@@ -3,6 +3,8 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Enums\RoleEnum;
+use App\Enums\UserStatusEnum;
 
 return new class extends Migration
 {
@@ -13,11 +15,18 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->unsignedTinyInteger('role')->default(RoleEnum::USER->value);
+            $table->string('name')->index();
+            $table->string('slug')->unique();
             $table->string('email')->unique();
+            $table->unsignedTinyInteger('status')->default(UserStatusEnum::ACTIVE->value);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->text('description')->nullable()->default(null);
+            $table->decimal('amount')->unsigned()->default(0.0);
             $table->rememberToken();
+            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
 
