@@ -6,7 +6,7 @@ use App\Enums\MoneyTypeEnum;
 use App\Enums\TransactionTypeEnum;
 use App\Http\Requests\AddMoneyRequest;
 use App\Interfaces\WalletServiceInterface;
-use App\Events\AddMoneyByCreateOrder;
+use App\Services\AddMoneyByCreateOrder;
 use Exception;
 use App\Models\Transaction;
 use App\Models\User;
@@ -18,7 +18,7 @@ class WalletService implements WalletServiceInterface
     {
         switch ($request->type) {
             case MoneyTypeEnum::ORDER->value:
-                AddMoneyByCreateOrder::dispatch($amount, $userId, $request);
+                (new AddMoneyByCreateOrder($amount, $userId, $request));
                 break;
             case MoneyTypeEnum::CARD->value:
                 throw new Exception('not supported');
@@ -40,30 +40,26 @@ class WalletService implements WalletServiceInterface
             throw new \Exception('Not enough money');
         }
 
-        try {
-            DB::transaction(function () use ($amount, $from, $to) {
-                Transaction::create([
-                    'amount' => $amount,
-                    'type' => TransactionTypeEnum::CREDIT->value,
-                    'user_id' => $to->id,
-                    'description' => 'Received fund from #email: ' . $from->email,
-                    'created_by' => $from->id,
-                ]);
+        DB::transaction(function () use ($amount, $from, $to) {
+            Transaction::create([
+                'amount' => $amount,
+                'type' => TransactionTypeEnum::CREDIT->value,
+                'user_id' => $to->id,
+                'description' => 'Received fund from #email: ' . $from->email,
+                'created_by' => $from->id,
+            ]);
 
-                Transaction::create([
-                    'amount' => $amount,
-                    'type' => TransactionTypeEnum::DEBIT->value,
-                    'user_id' => $from->id,
-                    'description' => 'Transferred fund to #email: ' . $to->email,
-                ]);
+            Transaction::create([
+                'amount' => $amount,
+                'type' => TransactionTypeEnum::DEBIT->value,
+                'user_id' => $from->id,
+                'description' => 'Transferred fund to #email: ' . $to->email,
+            ]);
 
-                $from->update(['amount' => $from->amount - $amount]);
-                $to->update(['amount' => $to->amount + $amount]);
+            $from->update(['amount' => $from->amount - $amount]);
+            $to->update(['amount' => $to->amount + $amount]);
 
-            });
-        } catch (\Throwable $exception) {
-            throw $exception;
-        }
+        });
 
         return true;
     }

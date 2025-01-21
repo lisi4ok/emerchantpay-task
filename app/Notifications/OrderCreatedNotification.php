@@ -27,8 +27,7 @@ class OrderCreatedNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        //return ['mail', 'database'];
-        return ['database'];
+        return ['mail', 'database'];
     }
 
     /**
@@ -38,7 +37,7 @@ class OrderCreatedNotification extends Notification
     {
         return (new MailMessage)
                     ->line('New order was created')
-                    ->action('Order', url('/'))
+                    ->action('Orders', route('admin.orders.index'))
                     ->line('Please check your orders');
     }
 

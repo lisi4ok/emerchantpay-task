@@ -11,6 +11,7 @@ use App\Http\Resources\UserResource;
 use App\Interfaces\WalletServiceInterface;
 use App\Models\User;
 use App\Services\WalletService;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -39,8 +40,10 @@ class WalletController extends Controller
                 (int) Auth::user()->id,
                 $request
             );
-        } catch (\Throwable $exception) {
-            return back()->with('error', $exception->getMessage());
+        } catch (ValidationException $exception) {
+            throw $exception;
+        } catch(\Throwable $exception) {
+            return back()->with('error', $exception->getMessage())->withInput();
         }
 
         return redirect()->route('dashboard')->with('success', 'Money added');
