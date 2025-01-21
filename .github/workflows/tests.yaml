@@ -12,7 +12,8 @@ jobs:
     name: PHP ${{ matrix.versions }} Test on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -22,8 +23,8 @@ jobs:
           #extensions: dom, curl, libxml, openssl, bcmath, json, xml, tokenizer, ctype, fileinfo, mbstring, zip, pcntl, pdo, sqlite, pgsql, mysqli pdo_sqlite, pdo_mysql, pdo_pgsql, bcmath, soap, intl, gd, exif, iconv
           coverage: none
 
-      - name: Run composer install
-        run: composer install -n --prefer-dist
+      - name: Install Composer Dependencies
+        run: composer install --optimize-autoloader --no-dev --no-progress --no-interaction --prefer-dist
 
       - name: Install Bun
         uses: oven-sh/setup-bun@v2
